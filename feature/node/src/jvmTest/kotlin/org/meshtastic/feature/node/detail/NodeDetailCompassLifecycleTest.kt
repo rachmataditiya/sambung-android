@@ -21,9 +21,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.v2.runComposeUiTest
 import androidx.lifecycle.Lifecycle
@@ -138,7 +140,10 @@ class NodeDetailCompassLifecycleTest {
             }
 
             val openCompass = getString(Res.string.open_compass)
-            onNodeWithText(openCompass).performScrollTo().performClick()
+            // Sambung: the person's header sits above the radio's detail, so the button starts off screen and the
+            // list has to be scrolled before the button exists.
+            onNode(hasScrollToNodeAction()).performScrollToNode(hasText(openCompass))
+            onNodeWithText(openCompass).performClick()
             onNodeWithText(getString(Res.string.compass_title)).assertExists()
             waitUntil("compass started", SETTLE_TIMEOUT_MS) { headingProvider.starts == 1 }
 

@@ -265,7 +265,7 @@ private fun sosDestinations(): List<Pair<String, String>> {
 }
 
 /** The same key the node list opens a direct conversation with. */
-private fun directKey(node: Node, ourNode: Node?): String {
+internal fun directKey(node: Node, ourNode: Node?): String {
     val channel = if (ourNode?.hasPKC == true && node.hasPKC) NodeAddress.PKC_CHANNEL_INDEX else node.channel
     return "$channel${node.user.id}"
 }

@@ -1913,6 +1913,7 @@ sambung_reach_stale
 sambung_search_empty
 sambung_search_everything
 sambung_search_hint
+sambung_search_names
 sambung_send_photo
 sambung_send_voice
 sambung_share_location

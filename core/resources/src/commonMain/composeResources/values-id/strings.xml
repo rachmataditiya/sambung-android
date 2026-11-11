@@ -1432,6 +1432,7 @@
     <string name="sambung_search_empty">Tidak ditemukan</string>
     <string name="sambung_search_everything">Cari di semua percakapan</string>
     <string name="sambung_search_hint">Kata di pesan mana pun</string>
+    <string name="sambung_search_names">Cari nama</string>
     <string name="sambung_send_photo">Kirim foto</string>
     <string name="sambung_send_voice">Kirim pesan suara</string>
     <string name="sambung_share_location">Bagikan lokasiku</string>

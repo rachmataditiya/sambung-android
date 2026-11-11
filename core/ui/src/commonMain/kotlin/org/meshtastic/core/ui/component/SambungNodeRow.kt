@@ -121,3 +121,33 @@ fun SambungNodeRow(
             }
     }
 }
+
+/** The top of a node's screen: the person first, and whether a message would get there, before the radio's detail. */
+@Composable
+fun SambungNodeHeader(node: Node, isOwnRadio: Boolean, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        NodeChip(node = node)
+        Text(
+            text = node.effectiveLongName,
+            style = MaterialTheme.typography.headlineSmall,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+        if (node.hasDisplayName && node.user.long_name.isNotBlank()) {
+            Text(
+                text = node.user.long_name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(
+            text = if (isOwnRadio) stringResource(Res.string.sambung_your_radio) else node.sambungReach().text(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}

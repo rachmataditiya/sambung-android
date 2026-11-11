@@ -36,6 +36,7 @@ import org.meshtastic.core.model.FirmwareRelease
 import org.meshtastic.core.model.Node
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.loading
+import org.meshtastic.core.ui.component.SambungNodeHeader
 import org.meshtastic.feature.node.component.AdministrationSection
 import org.meshtastic.feature.node.component.DeviceActions
 import org.meshtastic.feature.node.component.DeviceLinksSection
@@ -108,6 +109,9 @@ fun NodeDetailList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
+        // Sambung: the person and saving them as a contact come first; the radio's detail follows.
+        item { SambungNodeHeader(node = node, isOwnRadio = uiState.metricsState.isLocal) }
+        item { DisplayNameSection(node = node, onSaveDisplayName = onSaveDisplayName) }
         item {
             NodeDetailsSection(
                 node = node,
@@ -140,7 +144,6 @@ fun NodeDetailList(
                 trackedInLiveUpdate = trackedInLiveUpdate,
             )
         }
-        item { DisplayNameSection(node = node, onSaveDisplayName = onSaveDisplayName) }
         item { NotesSection(node = node, onSaveNotes = onSaveNotes) }
         if (!uiState.metricsState.isManaged) {
             item {

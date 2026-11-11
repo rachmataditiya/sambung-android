@@ -1985,6 +1985,7 @@
     <string name="sambung_search_empty">Nothing found</string>
     <string name="sambung_search_everything">Search every conversation</string>
     <string name="sambung_search_hint">A word in any message</string>
+    <string name="sambung_search_names">Search names</string>
     <string name="sambung_send_photo">Send photo</string>
     <string name="sambung_send_voice">Send voice message</string>
     <string name="sambung_share_location">Share my location</string>
