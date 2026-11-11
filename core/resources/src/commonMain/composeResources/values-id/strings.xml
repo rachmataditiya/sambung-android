@@ -1398,7 +1398,7 @@
     <string name="sambung_contacts">Kontak</string>
     <string name="sambung_external_power">Daya luar</string>
     <string name="sambung_favorite">Favorit</string>
-    <string name="sambung_heard_nodes">%1$d node terdengar dalam 2 jam terakhir</string>
+    <string name="sambung_heard_nodes">%1$d node terdengar 2 jam terakhir</string>
     <string name="sambung_heard_none">Belum ada node lain yang terdengar</string>
     <string name="sambung_location_distance">%1$s ke arah %2$s</string>
     <string name="sambung_location_here">Di tempat yang sama denganmu</string>
@@ -1414,6 +1414,8 @@
     <string name="sambung_message_action">Pesan</string>
     <string name="sambung_modified_notice">Sambung adalah versi modifikasi dari Meshtastic-Android (GPL-3.0), diubah sejak November 2026. Bekerja dengan node Meshtastic®. Meshtastic® adalah merek dagang terdaftar milik Meshtastic LLC. Sambung tidak berafiliasi dengan atau didukung oleh proyek Meshtastic.</string>
     <string name="sambung_new_message">Pesan baru</string>
+    <string name="sambung_no_conversations">Belum ada percakapan</string>
+    <string name="sambung_no_conversations_hint">Sambungkan radio, lalu kirim pesan pertama ke channel atau ke satu orang.</string>
     <string name="sambung_no_people">Belum ada orang di jaringan. Daftar ini terisi sendiri saat radio mendengar node lain.</string>
     <string name="sambung_other_people">Orang lain di jaringan</string>
     <string name="sambung_photo">Foto</string>

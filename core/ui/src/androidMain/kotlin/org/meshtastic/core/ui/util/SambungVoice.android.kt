@@ -59,10 +59,9 @@ actual fun rememberSambungVoiceRecorder(onClip: (ByteArray?) -> Unit): SambungVo
     fun record() {
         scope.launch { currentOnClip(withContext(Dispatchers.IO) { recordClip(isRecording) }) }
     }
+    // The system dialog took the press away, so a grant only makes the next press work.
     val askPermission =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) record() else currentOnClip(null)
-        }
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { currentOnClip(null) }
     // Leaving the screen mid-recording lets go of the microphone.
     DisposableEffect(Unit) { onDispose { isRecording.set(false) } }
 
@@ -72,7 +71,13 @@ actual fun rememberSambungVoiceRecorder(onClip: (ByteArray?) -> Unit): SambungVo
                 val granted =
                     ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
                         PackageManager.PERMISSION_GRANTED
-                if (granted) record() else askPermission.launch(Manifest.permission.RECORD_AUDIO)
+                if (granted) {
+                    // Set here, not on the recording thread, so letting go early is never overtaken.
+                    isRecording.set(true)
+                    record()
+                } else {
+                    askPermission.launch(Manifest.permission.RECORD_AUDIO)
+                }
             },
             stop = { isRecording.set(false) },
         )
@@ -99,7 +104,6 @@ private fun recordClip(isRecording: AtomicBoolean): ByteArray? {
     val samples = ShortArray(MAX_SAMPLES)
     var count = 0
     if (recorder.state == AudioRecord.STATE_INITIALIZED) {
-        isRecording.set(true)
         recorder.startRecording()
         while (isRecording.get() && count < MAX_SAMPLES) {
             val read = recorder.read(samples, count, minOf(SambungCodec2.SAMPLES_PER_FRAME, MAX_SAMPLES - count))

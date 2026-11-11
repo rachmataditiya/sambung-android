@@ -32,6 +32,9 @@ import org.meshtastic.core.common.util.nowMillis
 import org.meshtastic.core.model.Message
 import org.meshtastic.core.model.MessageStatus
 import org.meshtastic.core.model.Node
+import org.meshtastic.core.model.SambungTransferWire
+import org.meshtastic.core.repository.SambungMedia
+import org.meshtastic.core.repository.SambungMediaBoard
 import org.meshtastic.core.ui.component.preview.NodePreviewParameterProvider
 import org.meshtastic.core.ui.theme.AppTheme
 import org.meshtastic.core.ui.theme.StatusColors.StatusYellow
@@ -122,6 +125,38 @@ class MessageItemTest {
         }
 
         onNodeWithText("SNR 0.00 dB", useUnmergedTree = true).assertIsDisplayed()
+    }
+
+    @Test
+    fun aVoiceClipStandsInForTheMessageText() = runComposeUiTest {
+        val testNode = NodePreviewParameterProvider().minnieMouse
+        val message = directMessage(node = testNode, snr = null)
+        val clip =
+            SambungMedia(
+                kind = SambungTransferWire.KIND_VOICE,
+                codec = 1,
+                received = 1,
+                total = 3,
+                isOutgoing = false,
+            )
+        SambungMediaBoard.media.value = mapOf(SambungMediaBoard.key(testNode.num, message.packetId) to clip)
+        try {
+            setContent {
+                MessageItem(
+                    message = message,
+                    node = testNode,
+                    selected = false,
+                    onClick = {},
+                    onLongClick = {},
+                    onStatusClick = {},
+                    ourNode = testNode,
+                )
+            }
+
+            onNodeWithText("Direct message", useUnmergedTree = true).assertDoesNotExist()
+        } finally {
+            SambungMediaBoard.media.value = emptyMap()
+        }
     }
 
     private fun directMessage(node: Node, snr: Float?) = Message(

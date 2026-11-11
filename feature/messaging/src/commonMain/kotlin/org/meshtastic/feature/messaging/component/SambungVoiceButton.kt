@@ -185,7 +185,7 @@ internal fun SambungTalkStrip(state: SambungTalkState, modifier: Modifier = Modi
             style = MaterialTheme.typography.bodySmall,
             color =
             if (state.willCancel) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
     }

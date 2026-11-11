@@ -19,6 +19,7 @@ package org.meshtastic.feature.messaging.ui.contact
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -113,7 +116,10 @@ import org.meshtastic.core.resources.mute_status_muted_for_days
 import org.meshtastic.core.resources.mute_status_muted_for_hours
 import org.meshtastic.core.resources.mute_status_unmuted
 import org.meshtastic.core.resources.okay
+import org.meshtastic.core.resources.overflow_menu
 import org.meshtastic.core.resources.pin_selected
+import org.meshtastic.core.resources.sambung_no_conversations
+import org.meshtastic.core.resources.sambung_no_conversations_hint
 import org.meshtastic.core.resources.select_all
 import org.meshtastic.core.resources.swipe_action_delete
 import org.meshtastic.core.resources.swipe_action_mute
@@ -122,6 +128,7 @@ import org.meshtastic.core.resources.undo
 import org.meshtastic.core.resources.unmute
 import org.meshtastic.core.resources.unmute_selected
 import org.meshtastic.core.resources.unpin_selected
+import org.meshtastic.core.ui.component.EmptyState
 import org.meshtastic.core.ui.component.MainAppBar
 import org.meshtastic.core.ui.component.MeshtasticDialog
 import org.meshtastic.core.ui.component.MeshtasticImportFAB
@@ -129,6 +136,7 @@ import org.meshtastic.core.ui.component.MeshtasticTextDialog
 import org.meshtastic.core.ui.component.ScrollToTopEvent
 import org.meshtastic.core.ui.component.smartScrollToTop
 import org.meshtastic.core.ui.icon.Close
+import org.meshtastic.core.ui.icon.Conversations
 import org.meshtastic.core.ui.icon.Delete
 import org.meshtastic.core.ui.icon.ExpandLess
 import org.meshtastic.core.ui.icon.ExpandMore
@@ -137,6 +145,7 @@ import org.meshtastic.core.ui.icon.Keep
 import org.meshtastic.core.ui.icon.MarkChatRead
 import org.meshtastic.core.ui.icon.MarkChatUnread
 import org.meshtastic.core.ui.icon.MeshtasticIcons
+import org.meshtastic.core.ui.icon.More
 import org.meshtastic.core.ui.icon.SelectAll
 import org.meshtastic.core.ui.icon.VolumeMute
 import org.meshtastic.core.ui.icon.VolumeUp
@@ -254,7 +263,8 @@ fun ContactsScreen(
             MainAppBar(
                 title = stringResource(Res.string.conversations),
                 ourNode = ourNode,
-                showNodeChip = ourNode != null && connectionState is ConnectionState.Connected,
+                // Sambung: the chip would squeeze the title out; the device tab already shows the link.
+                showNodeChip = false,
                 canNavigateUp = false,
                 onNavigateUp = {},
                 actions = {
@@ -262,21 +272,13 @@ fun ContactsScreen(
                     SambungSosButton()
                     SambungNewMessageButton(onOpen = onNavigateToMessages)
                     SambungSearchButton(onOpen = onNavigateToMessages)
-                    IconButton(onClick = onNavigateToFilterSettings) {
-                        Icon(
-                            MeshtasticIcons.FilterList,
-                            contentDescription = stringResource(Res.string.filter_settings),
-                        )
-                    }
                     val unreadCountTotal by viewModel.unreadCountTotal.collectAsStateWithLifecycle(0)
-                    if (unreadCountTotal > 0) {
-                        IconButton(onClick = { viewModel.markAllAsRead() }) {
-                            Icon(
-                                MeshtasticIcons.MarkChatRead,
-                                contentDescription = stringResource(Res.string.mark_as_read),
-                            )
-                        }
-                    }
+                    // Sambung: the less used actions sit in a menu so the title keeps its room.
+                    ContactsOverflowMenu(
+                        showMarkRead = unreadCountTotal > 0,
+                        onOpenFilters = onNavigateToFilterSettings,
+                        onMarkAllRead = { viewModel.markAllAsRead() },
+                    )
                 },
                 onClickChip = { onClickNodeChip(it.num) },
             )
@@ -561,6 +563,46 @@ private fun SelectionToolbar(
 }
 
 @Composable
+private fun ContactsOverflowMenu(showMarkRead: Boolean, onOpenFilters: () -> Unit, onMarkAllRead: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(MeshtasticIcons.More, contentDescription = stringResource(Res.string.overflow_menu))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.filter_settings)) },
+                onClick = {
+                    expanded = false
+                    onOpenFilters()
+                },
+                leadingIcon = { Icon(MeshtasticIcons.FilterList, contentDescription = null) },
+            )
+            if (showMarkRead) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(Res.string.mark_as_read)) },
+                    onClick = {
+                        expanded = false
+                        onMarkAllRead()
+                    },
+                    leadingIcon = { Icon(MeshtasticIcons.MarkChatRead, contentDescription = null) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SambungEmptyInbox(modifier: Modifier = Modifier) {
+    EmptyState(
+        icon = MeshtasticIcons.Conversations,
+        title = stringResource(Res.string.sambung_no_conversations),
+        supportingText = stringResource(Res.string.sambung_no_conversations_hint),
+        modifier = modifier,
+    )
+}
+
+@Composable
 private fun ContactListView(
     contacts: List<Contact>,
     selectedList: List<String>,
@@ -593,6 +635,7 @@ private fun ContactListView(
     val dmTitle = stringResource(Res.string.direct_messages)
 
     LazyColumn(state = listState, modifier = modifier.fillMaxSize()) {
+        if (contacts.isEmpty()) item { SambungEmptyInbox(Modifier.fillParentMaxSize()) }
         contactSection(
             section = ContactSection.CHANNELS,
             title = channelsTitle,

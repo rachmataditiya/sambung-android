@@ -56,9 +56,16 @@ import org.meshtastic.core.ui.icon.PlayArrow
 import org.meshtastic.core.ui.util.sambungPlayVoice
 import org.meshtastic.core.ui.util.sambungVoiceSeconds
 
+/** True when a photo or voice clip stands in for this message's text. */
+@Composable
+internal fun sambungHasMedia(senderNodeNum: Int, packetId: Int): Boolean {
+    val all by SambungMediaBoard.media.collectAsState()
+    return all.containsKey(SambungMediaBoard.key(senderNodeNum, packetId))
+}
+
 /**
- * The photo (or voice clip) that travelled with a message, above its text: the picture once it is whole, and how far
- * the transfer is until then.
+ * The photo (or voice clip) that travelled with a message, in place of its text: the picture once it is whole, and how
+ * far the transfer is until then.
  *
  * Added for Sambung, November 2026.
  */

@@ -1967,6 +1967,8 @@
     <string name="sambung_message_action">Message</string>
     <string name="sambung_modified_notice">Sambung is a modified version of Meshtastic-Android (GPL-3.0), changed from November 2026. It works with Meshtastic® nodes. Meshtastic® is a registered trademark of Meshtastic LLC. Sambung is not affiliated with or endorsed by the Meshtastic project.</string>
     <string name="sambung_new_message">New message</string>
+    <string name="sambung_no_conversations">No conversations yet</string>
+    <string name="sambung_no_conversations_hint">Connect a radio, then send a first message to a channel or to one person.</string>
     <string name="sambung_no_people">Nobody on the network yet. This list fills in as the radio hears other nodes.</string>
     <string name="sambung_other_people">Other people on the network</string>
     <string name="sambung_photo">Photo</string>

@@ -457,46 +457,56 @@ fun MessageItem(
 
                 Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                     // Sambung: a photo that travelled with this message is drawn above its text.
+                    val senderNodeNum = if (message.fromLocal) ourNode.num else node.num
                     SambungMediaView(
-                        senderNodeNum = if (message.fromLocal) ourNode.num else node.num,
+                        senderNodeNum = senderNodeNum,
                         packetId = message.packetId,
                         contentColor = contentColor,
                     )
-                    if (searchQuery.isNotEmpty()) {
-                        HighlightedText(
-                            text = message.text,
-                            query = searchQuery,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = contentColor,
-                        )
-                    } else if (SambungLocationMessage.coordinate(message.text) != null) {
-                        // Sambung: a position sent as text is drawn as a location card.
-                        SambungLocationMessage.coordinate(message.text)?.let { (latitude, longitude) ->
-                            // An SOS or a note sent along with the position stays readable above the card.
-                            SambungLocationMessage.caption(message.text)?.let {
-                                Text(text = it, style = MaterialTheme.typography.bodyLarge, color = contentColor)
+                    // The text of such a message is only a stand-in for apps that cannot show the media.
+                    if (!sambungHasMedia(senderNodeNum, message.packetId)) {
+                        if (searchQuery.isNotEmpty()) {
+                            HighlightedText(
+                                text = message.text,
+                                query = searchQuery,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = contentColor,
+                            )
+                        } else if (SambungLocationMessage.coordinate(message.text) != null) {
+                            // Sambung: a position sent as text is drawn as a location card.
+                            SambungLocationMessage.coordinate(message.text)?.let { (latitude, longitude) ->
+                                // An SOS or a note sent along with the position stays readable above the card.
+                                SambungLocationMessage.caption(message.text)?.let {
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = contentColor,
+                                    )
+                                }
+                                SambungLocationCard(
+                                    latitude = latitude,
+                                    longitude = longitude,
+                                    contentColor = contentColor,
+                                    origin = ourNode.validPosition?.let { ourNode.latitude to ourNode.longitude },
+                                )
                             }
-                            SambungLocationCard(
-                                latitude = latitude,
-                                longitude = longitude,
-                                contentColor = contentColor,
-                                origin = ourNode.validPosition?.let { ourNode.latitude to ourNode.longitude },
+                        } else {
+                            val mentionDisplayName =
+                                remember(resolveMention) {
+                                    { id: String ->
+                                        resolveMention(id)?.let {
+                                            it.effectiveLongName.ifEmpty { it.user.short_name }
+                                        }
+                                    }
+                                }
+                            AutoLinkText(
+                                text = bodyText,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = contentColor,
+                                mentionName = mentionDisplayName,
+                                onMentionClick = { id -> resolveMention(id)?.let(onClickChip) },
                             )
                         }
-                    } else {
-                        val mentionDisplayName =
-                            remember(resolveMention) {
-                                { id: String ->
-                                    resolveMention(id)?.let { it.effectiveLongName.ifEmpty { it.user.short_name } }
-                                }
-                            }
-                        AutoLinkText(
-                            text = bodyText,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = contentColor,
-                            mentionName = mentionDisplayName,
-                            onMentionClick = { id -> resolveMention(id)?.let(onClickChip) },
-                        )
                     }
 
                     Row(
