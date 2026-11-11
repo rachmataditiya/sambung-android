@@ -1948,6 +1948,9 @@
     <string name="sambung_compass_se">southeast</string>
     <string name="sambung_compass_sw">southwest</string>
     <string name="sambung_compass_w">west</string>
+    <string name="sambung_contacts">Contacts</string>
+    <string name="sambung_external_power">External power</string>
+    <string name="sambung_favorite">Favourite</string>
     <string name="sambung_heard_nodes">%1$d nodes heard in the last 2 hours</string>
     <string name="sambung_heard_none">No other node heard yet</string>
     <string name="sambung_location_distance">%1$s to the %2$s</string>
@@ -1961,7 +1964,11 @@
     <string name="sambung_media_receiving">Receiving packet %1$d of %2$d</string>
     <string name="sambung_media_sending">Sending packet %1$d of %2$d</string>
     <string name="sambung_media_unreadable">This phone cannot show this picture format</string>
+    <string name="sambung_message_action">Message</string>
     <string name="sambung_modified_notice">Sambung is a modified version of Meshtastic-Android (GPL-3.0), changed from November 2026. It works with Meshtastic® nodes. Meshtastic® is a registered trademark of Meshtastic LLC. Sambung is not affiliated with or endorsed by the Meshtastic project.</string>
+    <string name="sambung_new_message">New message</string>
+    <string name="sambung_no_people">Nobody on the network yet. This list fills in as the radio hears other nodes.</string>
+    <string name="sambung_other_people">Other people on the network</string>
     <string name="sambung_photo">Photo</string>
     <string name="sambung_photo_estimate">What you see is what will be received. It takes about %1$d seconds to send, and the radio is busy with this photo for that long.</string>
     <string name="sambung_photo_large">Large</string>
@@ -1975,6 +1982,9 @@
     <string name="sambung_reach_never">Never heard</string>
     <string name="sambung_reach_relays">Relay hops: %1$d, %2$s</string>
     <string name="sambung_reach_stale">Last heard %1$s</string>
+    <string name="sambung_search_empty">Nothing found</string>
+    <string name="sambung_search_everything">Search every conversation</string>
+    <string name="sambung_search_hint">A word in any message</string>
     <string name="sambung_send_photo">Send photo</string>
     <string name="sambung_send_voice">Send voice message</string>
     <string name="sambung_share_location">Share my location</string>
@@ -2002,6 +2012,7 @@
     <string name="sambung_voice_record">Record</string>
     <string name="sambung_voice_redo">Redo</string>
     <string name="sambung_voice_stop">Done</string>
+    <string name="sambung_your_radio">Your radio</string>
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I'm kinda scared.</string>
     <string name="sats">Sats</string>
     <string name="save">Save</string>

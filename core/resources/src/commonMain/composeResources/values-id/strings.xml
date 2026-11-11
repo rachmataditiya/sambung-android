@@ -1395,6 +1395,9 @@
     <string name="sambung_compass_se">tenggara</string>
     <string name="sambung_compass_sw">barat daya</string>
     <string name="sambung_compass_w">barat</string>
+    <string name="sambung_contacts">Kontak</string>
+    <string name="sambung_external_power">Daya luar</string>
+    <string name="sambung_favorite">Favorit</string>
     <string name="sambung_heard_nodes">%1$d node terdengar dalam 2 jam terakhir</string>
     <string name="sambung_heard_none">Belum ada node lain yang terdengar</string>
     <string name="sambung_location_distance">%1$s ke arah %2$s</string>
@@ -1408,7 +1411,11 @@
     <string name="sambung_media_receiving">Menerima paket %1$d dari %2$d</string>
     <string name="sambung_media_sending">Mengirim paket %1$d dari %2$d</string>
     <string name="sambung_media_unreadable">HP ini tidak bisa menampilkan format gambar ini</string>
+    <string name="sambung_message_action">Pesan</string>
     <string name="sambung_modified_notice">Sambung adalah versi modifikasi dari Meshtastic-Android (GPL-3.0), diubah sejak November 2026. Bekerja dengan node Meshtastic®. Meshtastic® adalah merek dagang terdaftar milik Meshtastic LLC. Sambung tidak berafiliasi dengan atau didukung oleh proyek Meshtastic.</string>
+    <string name="sambung_new_message">Pesan baru</string>
+    <string name="sambung_no_people">Belum ada orang di jaringan. Daftar ini terisi sendiri saat radio mendengar node lain.</string>
+    <string name="sambung_other_people">Orang lain di jaringan</string>
     <string name="sambung_photo">Foto</string>
     <string name="sambung_photo_estimate">Yang terlihat adalah yang akan diterima. Terkirim dalam kira-kira %1$d detik, dan selama itu radio dipakai untuk foto ini.</string>
     <string name="sambung_photo_large">Besar</string>
@@ -1422,6 +1429,9 @@
     <string name="sambung_reach_never">Belum pernah terdengar</string>
     <string name="sambung_reach_relays">Lewat %1$d perantara, %2$s</string>
     <string name="sambung_reach_stale">Terakhir terdengar %1$s</string>
+    <string name="sambung_search_empty">Tidak ditemukan</string>
+    <string name="sambung_search_everything">Cari di semua percakapan</string>
+    <string name="sambung_search_hint">Kata di pesan mana pun</string>
     <string name="sambung_send_photo">Kirim foto</string>
     <string name="sambung_send_voice">Kirim pesan suara</string>
     <string name="sambung_share_location">Bagikan lokasiku</string>
@@ -1449,6 +1459,7 @@
     <string name="sambung_voice_record">Rekam</string>
     <string name="sambung_voice_redo">Ulangi</string>
     <string name="sambung_voice_stop">Selesai</string>
+    <string name="sambung_your_radio">Radio kamu</string>
     <string name="sats">Satelit</string>
     <string name="save">Simpan</string>
     <string name="save_and_restart">Simpan &amp; mulai ulang</string>

@@ -1876,6 +1876,9 @@ sambung_compass_s
 sambung_compass_se
 sambung_compass_sw
 sambung_compass_w
+sambung_contacts
+sambung_external_power
+sambung_favorite
 sambung_heard_nodes
 sambung_heard_none
 sambung_location_distance
@@ -1889,7 +1892,11 @@ sambung_media_not_sent
 sambung_media_receiving
 sambung_media_sending
 sambung_media_unreadable
+sambung_message_action
 sambung_modified_notice
+sambung_new_message
+sambung_no_people
+sambung_other_people
 sambung_photo
 sambung_photo_estimate
 sambung_photo_large
@@ -1903,6 +1910,9 @@ sambung_reach_internet
 sambung_reach_never
 sambung_reach_relays
 sambung_reach_stale
+sambung_search_empty
+sambung_search_everything
+sambung_search_hint
 sambung_send_photo
 sambung_send_voice
 sambung_share_location
@@ -1930,6 +1940,7 @@ sambung_voice_play
 sambung_voice_record
 sambung_voice_redo
 sambung_voice_stop
+sambung_your_radio
 sample_message
 sats
 save

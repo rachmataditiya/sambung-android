@@ -65,7 +65,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.meshtastic.core.model.ConnectionState
 import org.meshtastic.core.model.Node
-import org.meshtastic.core.model.NodeListDensity
 import org.meshtastic.core.model.excludes
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.channel_invalid
@@ -85,8 +84,7 @@ import org.meshtastic.core.ui.component.EmptyState
 import org.meshtastic.core.ui.component.ListScrollbar
 import org.meshtastic.core.ui.component.MainAppBar
 import org.meshtastic.core.ui.component.MeshtasticImportFAB
-import org.meshtastic.core.ui.component.NodeItem
-import org.meshtastic.core.ui.component.NodeItemCompact
+import org.meshtastic.core.ui.component.SambungNodeRow
 import org.meshtastic.core.ui.component.ScrollToTopEvent
 import org.meshtastic.core.ui.component.ShareContactDialog
 import org.meshtastic.core.ui.component.smartScrollToTop
@@ -166,7 +164,6 @@ fun NodeListScreen(
     val totalNodeCount by viewModel.totalNodeCount.collectAsStateWithLifecycle(0)
     val unfilteredNodes by viewModel.unfilteredNodeList.collectAsStateWithLifecycle()
     val unheardNodes by viewModel.unheardBannerNodes.collectAsStateWithLifecycle()
-    val deviceImageUrls by viewModel.deviceImageUrls.collectAsStateWithLifecycle()
     val ignoredNodeCount = unfilteredNodes.count { it.isIgnored }
 
     // No cache window here: this pane renders inside ThreePaneScaffold's LookaheadScope, where a
@@ -183,18 +180,6 @@ fun NodeListScreen(
     }
 
     val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
-    val deviceType by viewModel.deviceType.collectAsStateWithLifecycle()
-
-    val density by viewModel.nodeListDensity.collectAsStateWithLifecycle()
-    val showPower by viewModel.shouldShowPower.collectAsStateWithLifecycle()
-    val showLastHeard by viewModel.shouldShowLastHeard.collectAsStateWithLifecycle()
-    val lastHeardIsRelative by viewModel.lastHeardIsRelative.collectAsStateWithLifecycle()
-    val showLocation by viewModel.shouldShowLocation.collectAsStateWithLifecycle()
-    val showHops by viewModel.shouldShowHops.collectAsStateWithLifecycle()
-    val showSignal by viewModel.shouldShowSignal.collectAsStateWithLifecycle()
-    val showChannel by viewModel.shouldShowChannel.collectAsStateWithLifecycle()
-    val showRole by viewModel.shouldShowRole.collectAsStateWithLifecycle()
-    val showTelemetry by viewModel.shouldShowTelemetry.collectAsStateWithLifecycle()
 
     val isScrollInProgress by remember {
         derivedStateOf { listState.isScrollInProgress && (listState.canScrollForward || listState.canScrollBackward) }
@@ -242,45 +227,15 @@ fun NodeListScreen(
 
             val isActive = remember(activeNodeId, node.num) { activeNodeId == node.num }
 
-            when (density) {
-                NodeListDensity.COMPLETE ->
-                    NodeItem(
-                        modifier = Modifier.animateItem(),
-                        thisNode = ourNode,
-                        thatNode = node,
-                        distanceUnits = state.distanceUnits,
-                        tempInFahrenheit = state.tempInFahrenheit,
-                        onClick = { navigateToNodeDetails(node.num) },
-                        onLongClick = longClick,
-                        connectionState = connectionState,
-                        deviceType = deviceType,
-                        isActive = isActive,
-                        showTelemetry = showTelemetry,
-                        deviceImageUrl = deviceImageUrls[node.user.hw_model.value],
-                    )
-
-                NodeListDensity.COMPACT ->
-                    NodeItemCompact(
-                        modifier = Modifier.animateItem(),
-                        thisNode = ourNode,
-                        thatNode = node,
-                        distanceUnits = state.distanceUnits,
-                        onClick = { navigateToNodeDetails(node.num) },
-                        onLongClick = longClick,
-                        isActive = isActive,
-                        showPower = showPower,
-                        showLastHeard = showLastHeard,
-                        lastHeardIsRelative = lastHeardIsRelative,
-                        showLocation = showLocation,
-                        showHops = showHops,
-                        showSignal = showSignal,
-                        showChannel = showChannel,
-                        showRole = showRole,
-                        showTelemetry = showTelemetry,
-                        tempInFahrenheit = state.tempInFahrenheit,
-                        deviceImageUrl = deviceImageUrls[node.user.hw_model.value],
-                    )
-            }
+            // Sambung: one row for every density; the technical detail is on the node's screen.
+            SambungNodeRow(
+                node = node,
+                isOwnRadio = isThisNode,
+                isActive = isActive,
+                onClick = { navigateToNodeDetails(node.num) },
+                onLongClick = longClick,
+                modifier = Modifier.animateItem(),
+            )
             if (isThisNode) {
                 LocalNodeContextMenu(
                     expanded = expanded && ownItems.any,
