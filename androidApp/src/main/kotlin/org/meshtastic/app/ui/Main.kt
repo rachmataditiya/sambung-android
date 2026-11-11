@@ -37,7 +37,6 @@ import org.meshtastic.core.model.ConnectionState
 import org.meshtastic.core.model.DeviceAddress
 import org.meshtastic.core.model.service.LockdownState
 import org.meshtastic.core.model.util.TimeConstants
-import org.meshtastic.core.navigation.NodesRoute
 import org.meshtastic.core.navigation.TopLevelDestination
 import org.meshtastic.core.navigation.rememberMultiBackstack
 import org.meshtastic.core.repository.PlatformAnalytics
@@ -64,7 +63,7 @@ import org.meshtastic.feature.wifiprovision.navigation.wifiProvisionGraph
 @Composable
 fun MainScreen() {
     val viewModel: UIViewModel = koinViewModel()
-    // Land on Connections for first-run / no-device-selected; otherwise on Nodes (seeded from prefs).
+    // Land on Connections for first-run / no-device-selected; otherwise on Messages (seeded from prefs).
     val initialTab = remember { initialRoute(viewModel.currentDeviceAddressFlow.value) }
     val multiBackstack = rememberMultiBackstack(initialTab)
     val backStack = multiBackstack.activeBackStack
@@ -124,7 +123,8 @@ fun MainScreen() {
 }
 
 private fun initialRoute(deviceAddress: String?): NavKey =
-    if (DeviceAddress.parse(deviceAddress) == null) TopLevelDestination.Connect.route else NodesRoute.Nodes
+    // Sambung: a messenger opens on its conversations.
+    if (DeviceAddress.parse(deviceAddress) == null) TopLevelDestination.Connect.route else TopLevelDestination.Messages.route
 
 @Composable
 @Suppress("LongMethod", "CyclomaticComplexMethod")
