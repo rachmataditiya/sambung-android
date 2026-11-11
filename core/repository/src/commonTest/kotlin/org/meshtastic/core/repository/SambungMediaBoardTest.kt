@@ -87,4 +87,18 @@ class SambungMediaBoardTest {
         assertNull(SambungMediaBoard.media.value[key])
         assertContentEquals(photo, SambungMediaBoard.media.value[other]?.bytes)
     }
+
+    @Test
+    fun aVoiceClipPlaysAtOnceOnlyForTheConversationOnScreen() {
+        val direct = SambungVoiceArrival(senderNodeNum = 7, isDirect = true, channel = 0, clip = photo)
+        val onChannel = SambungVoiceArrival(senderNodeNum = 9, isDirect = false, channel = 2, clip = photo)
+        // A direct clip from the person whose conversation is open.
+        assertTrue(direct.isFor(peerNodeNum = 7, channelIndex = null))
+        assertTrue(!direct.isFor(peerNodeNum = 8, channelIndex = null))
+        assertTrue(!direct.isFor(peerNodeNum = null, channelIndex = 0))
+        // A channel clip on the open channel, from anyone.
+        assertTrue(onChannel.isFor(peerNodeNum = null, channelIndex = 2))
+        assertTrue(!onChannel.isFor(peerNodeNum = null, channelIndex = 1))
+        assertTrue(!onChannel.isFor(peerNodeNum = 9, channelIndex = 2))
+    }
 }

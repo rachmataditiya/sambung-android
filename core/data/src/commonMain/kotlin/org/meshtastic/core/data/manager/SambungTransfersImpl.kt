@@ -35,6 +35,7 @@ import org.meshtastic.core.repository.CommandSender
 import org.meshtastic.core.repository.SambungMedia
 import org.meshtastic.core.repository.SambungMediaBoard
 import org.meshtastic.core.repository.SambungTransfers
+import org.meshtastic.core.repository.SambungVoiceArrival
 import org.meshtastic.core.repository.usecase.SendMessageOutcome
 import org.meshtastic.core.repository.usecase.SendMessageUseCase
 import org.meshtastic.proto.MeshPacket
@@ -123,6 +124,12 @@ class SambungTransfersImpl(
                     bytes = file,
                 ),
             )
+            if (file != null && manifest.kind == SambungTransferWire.KIND_VOICE) {
+                // Push to talk: the conversation on screen plays it at once.
+                SambungMediaBoard.arrivedVoice.tryEmit(
+                    SambungVoiceArrival(packet.from, entry.isDirect, packet.channel, file),
+                )
+            }
             if (file != null && entry.isDirect) reply(Packet.Complete(id), packet.from, entry.replyChannel)
         }
         entry.watchdog?.cancel()

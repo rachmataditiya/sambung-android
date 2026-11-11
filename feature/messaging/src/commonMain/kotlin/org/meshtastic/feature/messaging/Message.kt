@@ -100,6 +100,7 @@ import org.meshtastic.core.model.QuickChatAction
 import org.meshtastic.core.model.effectiveLongName
 import org.meshtastic.core.model.sambungReach
 import org.meshtastic.core.model.util.getChannel
+import org.meshtastic.core.repository.SambungMediaBoard
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.archived_channel_read_only
 import org.meshtastic.core.resources.sambung_heard_nodes
@@ -117,6 +118,7 @@ import org.meshtastic.core.ui.icon.Send
 import org.meshtastic.core.ui.theme.AppTheme
 import org.meshtastic.core.ui.util.createClipEntry
 import org.meshtastic.core.ui.util.isFromSoftKeyboard
+import org.meshtastic.core.ui.util.sambungPlayVoice
 import org.meshtastic.feature.messaging.component.ActionModeTopBar
 import org.meshtastic.feature.messaging.component.DeleteMessageDialog
 import org.meshtastic.feature.messaging.component.FormattingToolbar
@@ -128,7 +130,9 @@ import org.meshtastic.feature.messaging.component.QuickChatRow
 import org.meshtastic.feature.messaging.component.ReplySnippet
 import org.meshtastic.feature.messaging.component.SambungLocationButton
 import org.meshtastic.feature.messaging.component.SambungPhotoButton
-import org.meshtastic.feature.messaging.component.SambungVoiceButton
+import org.meshtastic.feature.messaging.component.SambungTalkButton
+import org.meshtastic.feature.messaging.component.SambungTalkState
+import org.meshtastic.feature.messaging.component.SambungTalkStrip
 import org.meshtastic.feature.messaging.component.ScrollToBottomFab
 import org.meshtastic.feature.messaging.component.TranslationModelDownloadDialog
 
@@ -254,6 +258,17 @@ fun MessageScreen(
                 else -> viewModel.getLongName(nodeId)
             }
         }
+
+    // Sambung, push to talk: what the held talk button is doing, and playing a clip the moment it arrives for this
+    // conversation, like a handheld radio.
+    var talk by remember { mutableStateOf<SambungTalkState?>(null) }
+    LaunchedEffect(contactKey) {
+        SambungMediaBoard.arrivedVoice.collect { arrival ->
+            val isDirectHere = nodeId != NodeAddress.ID_BROADCAST
+            val peer = if (isDirectHere) viewModel.getNode(nodeId).num else null
+            if (arrival.isFor(peerNodeNum = peer, channelIndex = channelIndex)) sambungPlayVoice(arrival.clip)
+        }
+    }
 
     // Sambung: under the title, whether a message is likely to get there.
     val reachText =
@@ -537,21 +552,31 @@ fun MessageScreen(
                         }
                         if (photoAllowed) {
                             SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
-                            SambungVoiceButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
+                            SambungTalkButton(
+                                contactKey = contactKey,
+                                ourNodeNum = ourNode?.num,
+                                onTalk = { talk = it },
+                            )
                         }
-                        MessageInput(
-                            isEnabled = connectionState is ConnectionState.Connected,
-                            isHomoglyphEncodingEnabled = homoglyphEncodingEnabled,
-                            textFieldState = messageInputState,
-                            mentionCandidates = mentionCandidates,
-                            modifier = Modifier.weight(1f),
-                            onSendMessage = {
-                                val messageText = messageInputState.text.toString().trim { it.isWhitespace() }
-                                if (messageText.isNotEmpty()) {
-                                    onEvent(MessageScreenEvent.SendMessage(messageText, replyingToPacketId))
-                                }
-                            },
-                        )
+                        // Push to talk: while the button is held, the field gives way to the recording strip.
+                        val talking = talk
+                        if (talking != null) {
+                            SambungTalkStrip(state = talking, modifier = Modifier.weight(1f))
+                        } else {
+                            MessageInput(
+                                isEnabled = connectionState is ConnectionState.Connected,
+                                isHomoglyphEncodingEnabled = homoglyphEncodingEnabled,
+                                textFieldState = messageInputState,
+                                mentionCandidates = mentionCandidates,
+                                modifier = Modifier.weight(1f),
+                                onSendMessage = {
+                                    val messageText = messageInputState.text.toString().trim { it.isWhitespace() }
+                                    if (messageText.isNotEmpty()) {
+                                        onEvent(MessageScreenEvent.SendMessage(messageText, replyingToPacketId))
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }

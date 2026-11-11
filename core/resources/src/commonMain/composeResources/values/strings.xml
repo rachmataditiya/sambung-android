@@ -1987,7 +1987,6 @@
     <string name="sambung_search_hint">A word in any message</string>
     <string name="sambung_search_names">Search names</string>
     <string name="sambung_send_photo">Send photo</string>
-    <string name="sambung_send_voice">Send voice message</string>
     <string name="sambung_share_location">Share my location</string>
     <string name="sambung_sos_active">SOS on, sent %1$d times</string>
     <string name="sambung_sos_default_text">Need help right now.</string>
@@ -2002,17 +2001,12 @@
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Device</string>
     <string name="sambung_tab_network">Network</string>
-    <string name="sambung_voice_failed">Nothing was recorded. Allow the microphone for Sambung, and hold on a little longer.</string>
-    <string name="sambung_voice_hint_idle">Up to %1$d seconds. Speak close to the microphone.</string>
-    <string name="sambung_voice_hint_recorded">Listen first: this is how it will sound to them. It takes about %1$d seconds to send.</string>
-    <string name="sambung_voice_hint_recording">Recording…</string>
-    <string name="sambung_voice_listen">Listen</string>
+    <string name="sambung_talk_cancel">Let go to cancel</string>
+    <string name="sambung_talk_hold">Hold to talk</string>
+    <string name="sambung_talk_release">Let go to send, slide left to cancel</string>
     <string name="sambung_voice_message">Voice message</string>
     <string name="sambung_voice_placeholder">🎤 Voice message %1$s</string>
     <string name="sambung_voice_play">Play voice message</string>
-    <string name="sambung_voice_record">Record</string>
-    <string name="sambung_voice_redo">Redo</string>
-    <string name="sambung_voice_stop">Done</string>
     <string name="sambung_your_radio">Your radio</string>
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I'm kinda scared.</string>
     <string name="sats">Sats</string>

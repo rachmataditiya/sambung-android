@@ -16,6 +16,7 @@
  */
 package org.meshtastic.core.repository
 
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import okio.FileSystem
@@ -41,6 +42,17 @@ data class SambungMedia(
     val bytes: ByteArray? = null,
 )
 
+/** A voice clip that has just arrived whole: who sent it, and whether to this node alone or to a channel. */
+@Suppress("ArrayInDataClass")
+data class SambungVoiceArrival(val senderNodeNum: Int, val isDirect: Boolean, val channel: Int, val clip: ByteArray) {
+    /**
+     * Whether the clip belongs to the conversation on screen: a direct one with [peerNodeNum], or, when that is null,
+     * the channel [channelIndex].
+     */
+    fun isFor(peerNodeNum: Int?, channelIndex: Int?): Boolean =
+        if (peerNodeNum != null) isDirect && senderNodeNum == peerNodeNum else !isDirect && channel == channelIndex
+}
+
 /**
  * Where the transfers put their files and the message list finds them. Whole files are also kept in a folder, once one
  * is attached, so a photo or voice clip is still there after the app is restarted. A transfer that is still under way
@@ -48,6 +60,9 @@ data class SambungMedia(
  */
 object SambungMediaBoard {
     val media = MutableStateFlow<Map<String, SambungMedia>>(emptyMap())
+
+    /** Push to talk: the conversation on screen listens here and plays a clip as it lands. */
+    val arrivedVoice = MutableSharedFlow<SambungVoiceArrival>(extraBufferCapacity = ARRIVAL_BUFFER)
 
     private var fileSystem: FileSystem = FileSystem.SYSTEM
     private var directory: Path? = null
@@ -115,6 +130,7 @@ object SambungMediaBoard {
     private const val OUTGOING = "o"
     private const val INCOMING = "i"
     private const val NAME_PARTS = 4
+    private const val ARRIVAL_BUFFER = 4
 }
 
 /** Sends and receives files over the mesh with the packets in `SambungTransferWire`. */
