@@ -1408,6 +1408,7 @@
     <string name="sambung_media_receiving">Menerima paket %1$d dari %2$d</string>
     <string name="sambung_media_sending">Mengirim paket %1$d dari %2$d</string>
     <string name="sambung_media_unreadable">HP ini tidak bisa menampilkan format gambar ini</string>
+    <string name="sambung_modified_notice">Sambung adalah versi modifikasi dari Meshtastic-Android (GPL-3.0), diubah sejak November 2026. Bekerja dengan node Meshtastic®. Meshtastic® adalah merek dagang terdaftar milik Meshtastic LLC. Sambung tidak berafiliasi dengan atau didukung oleh proyek Meshtastic.</string>
     <string name="sambung_photo">Foto</string>
     <string name="sambung_photo_estimate">Yang terlihat adalah yang akan diterima. Terkirim dalam kira-kira %1$d detik, dan selama itu radio dipakai untuk foto ini.</string>
     <string name="sambung_photo_large">Besar</string>
@@ -1528,7 +1529,7 @@
     <string name="share_contact_subject">Kontak Meshtastic</string>
     <string name="share_location">Bagikan lokasi</string>
     <string name="share_location_description">Pakai GPS ponselmu untuk mengirim lokasi ke node, tanpa GPS perangkat keras di node.</string>
-    <string name="share_qr_subtext">Pindai kode ini dengan app Meshtastic di perangkat lain untuk menambahkannya di sana.</string>
+    <string name="share_qr_subtext">Pindai kode ini dengan Sambung atau app Meshtastic di perangkat lain untuk menambahkannya di sana.</string>
     <string name="share_to">Bagikan ke…</string>
     <string name="share_your_location_in_real_time">Bagikan lokasimu secara langsung dan jaga kelompokmu tetap terkoordinasi dengan fitur GPS terpadu.</string>
     <string name="shared_contact_no_public_key">Kontak ini tidak punya kunci publik, jadi tidak bisa diimpor. Kontak tanpa kunci akan menghapus kunci apa pun yang sudah dimiliki radiomu untuk node itu. Minta pengirim membagikannya lagi setelah node-nya bertukar kunci.</string>

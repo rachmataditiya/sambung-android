@@ -16,20 +16,20 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<!-- Modified for Sambung, November 2026: the Sambung mark. The file keeps its name so its users stay untouched. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <group
-        android:scaleX="0.24"
-        android:scaleY="0.24"
-        android:translateY="5.4">
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M64.716,13.073L37.867,52.447L32.204,48.585L61.878,5.068C62.516,4.132 63.575,3.572 64.707,3.571C65.839,3.57 66.899,4.128 67.538,5.063L97.281,48.512L91.625,52.384L64.716,13.073Z" />
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M8.379,52.406L39.741,6.415L34.078,2.553L2.716,48.544L8.379,52.406Z" />
-    </group>
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+  <group
+      android:pivotX="512"
+      android:pivotY="512"
+      android:scaleX="1.5"
+      android:scaleY="1.5">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M352 232 H672 A140 140 0 0 1 812 372 V532 A140 140 0 0 1 672 672 H476 L330 792 L352 672 A140 140 0 0 1 212 532 V372 A140 140 0 0 1 352 232 Z M348 452 a54 54 0 1 0 108 0 a54 54 0 1 0 -108 0 Z M568 452 a54 54 0 1 0 108 0 a54 54 0 1 0 -108 0 Z M456 432 H568 V472 H456 Z"/>
+  </group>
 </vector>

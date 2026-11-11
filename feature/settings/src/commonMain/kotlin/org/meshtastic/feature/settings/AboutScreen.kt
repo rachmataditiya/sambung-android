@@ -65,6 +65,7 @@ import org.meshtastic.core.resources.license_notice
 import org.meshtastic.core.resources.need_hardware
 import org.meshtastic.core.resources.need_hardware_description
 import org.meshtastic.core.resources.project_information
+import org.meshtastic.core.resources.sambung_modified_notice
 import org.meshtastic.core.resources.website
 import org.meshtastic.core.resources.what_is_meshtastic
 import org.meshtastic.core.resources.what_is_meshtastic_description
@@ -87,7 +88,9 @@ private val CAROUSEL_IMAGE_WIDTH = 110.dp
 private val CAROUSEL_IMAGE_HEIGHT = 130.dp
 
 private const val HARDWARE_URL = "https://meshtastic.org/#hardware"
-private const val GITHUB_REPO_URL = "https://github.com/meshtastic/Meshtastic-Android"
+
+// Sambung: the source of this app, as the licence asks.
+private const val GITHUB_REPO_URL = "https://github.com/rachmataditiya/sambung-android"
 private const val WEBSITE_URL = "https://meshtastic.org"
 private const val DOCS_URL = "https://meshtastic.org/docs/getting-started"
 private const val LICENSE_URL = "https://www.gnu.org/licenses/gpl-3.0.html"
@@ -237,6 +240,14 @@ private fun CopyrightFooter(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth().padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
+        // Sambung: says this is a modified version and whose trademark Meshtastic is; upstream's notice follows.
+        Text(
+            text = stringResource(Res.string.sambung_modified_notice),
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
         Text(
             text = stringResource(Res.string.copyright_notice),
             modifier = Modifier.fillMaxWidth(),

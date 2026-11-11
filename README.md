@@ -1,3 +1,9 @@
+> **Sambung** is a modified version of [Meshtastic-Android](https://github.com/meshtastic/Meshtastic-Android)
+> (GPL-3.0), changed from November 2026: a chat-first messenger for LoRa mesh radios, in Indonesian and
+> English. It works with Meshtastic® nodes. Meshtastic® is a registered trademark of Meshtastic LLC; Sambung is
+> not affiliated with or endorsed by the Meshtastic project. Upstream is merged in from the `upstream` remote.
+> What follows is upstream's README.
+
 <p align="center">
   <img src=".github/meshtastic_logo.png" alt="Meshtastic Logo" width="200"/>
 </p>

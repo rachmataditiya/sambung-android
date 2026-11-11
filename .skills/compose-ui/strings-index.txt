@@ -1889,6 +1889,7 @@ sambung_media_not_sent
 sambung_media_receiving
 sambung_media_sending
 sambung_media_unreadable
+sambung_modified_notice
 sambung_photo
 sambung_photo_estimate
 sambung_photo_large
