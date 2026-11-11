@@ -56,15 +56,8 @@ interface SambungTransfers {
     fun handlePacket(packet: MeshPacket, myNodeNum: Int)
 
     /**
-     * Sends [placeholder] as an ordinary text message to [contactKey], then [file] in packets attached to it. False
-     * when nothing was sent or the sending stopped part way.
+     * Sends [placeholder] as an ordinary text message to [contactKey], then [file] in packets attached to it. Returns
+     * at once; the transfer runs on for a minute or so and its progress shows on the message.
      */
-    suspend fun send(
-        file: ByteArray,
-        kind: Int,
-        codec: Int,
-        placeholder: String,
-        contactKey: String,
-        ourNodeNum: Int,
-    ): Boolean
+    fun send(file: ByteArray, kind: Int, codec: Int, placeholder: String, contactKey: String, ourNodeNum: Int)
 }

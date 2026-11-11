@@ -126,6 +126,7 @@ import org.meshtastic.feature.messaging.component.MessageSearchBar
 import org.meshtastic.feature.messaging.component.MessageTopBar
 import org.meshtastic.feature.messaging.component.QuickChatRow
 import org.meshtastic.feature.messaging.component.ReplySnippet
+import org.meshtastic.feature.messaging.component.SambungPhotoButton
 import org.meshtastic.feature.messaging.component.ScrollToBottomFab
 import org.meshtastic.feature.messaging.component.TranslationModelDownloadDialog
 
@@ -520,18 +521,30 @@ fun MessageScreen(
                         onClearReply = { replyingToPacketId = null },
                         ourNode = ourNode,
                     )
-                    MessageInput(
-                        isEnabled = connectionState is ConnectionState.Connected,
-                        isHomoglyphEncodingEnabled = homoglyphEncodingEnabled,
-                        textFieldState = messageInputState,
-                        mentionCandidates = mentionCandidates,
-                        onSendMessage = {
-                            val messageText = messageInputState.text.toString().trim { it.isWhitespace() }
-                            if (messageText.isNotEmpty()) {
-                                onEvent(MessageScreenEvent.SendMessage(messageText, replyingToPacketId))
-                            }
-                        },
-                    )
+                    // Sambung: a photo keeps the radio busy for tens of seconds, so it is offered only in direct
+                    // messages and on channels with their own key, never on a public one.
+                    val photoAllowed =
+                        connectionState is ConnectionState.Connected &&
+                            (
+                                nodeId != NodeAddress.ID_BROADCAST ||
+                                    (channelIndex?.let { channels?.getChannel(it)?.settings?.psk?.size } ?: 0) > 1
+                                )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (photoAllowed) SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
+                        MessageInput(
+                            isEnabled = connectionState is ConnectionState.Connected,
+                            isHomoglyphEncodingEnabled = homoglyphEncodingEnabled,
+                            textFieldState = messageInputState,
+                            mentionCandidates = mentionCandidates,
+                            modifier = Modifier.weight(1f),
+                            onSendMessage = {
+                                val messageText = messageInputState.text.toString().trim { it.isWhitespace() }
+                                if (messageText.isNotEmpty()) {
+                                    onEvent(MessageScreenEvent.SendMessage(messageText, replyingToPacketId))
+                                }
+                            },
+                        )
+                    }
                 }
             }
         },

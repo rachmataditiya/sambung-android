@@ -168,7 +168,19 @@ class SambungTransfersImpl(
     private suspend fun reply(packet: Packet, toNum: Int, channel: Int) =
         sendQuietly(SambungTransferWire.encode(packet), NodeAddress.numToDefaultId(toNum), channel, wantAck = true)
 
-    override suspend fun send(
+    override fun send(
+        file: ByteArray,
+        kind: Int,
+        codec: Int,
+        placeholder: String,
+        contactKey: String,
+        ourNodeNum: Int,
+    ) {
+        scope.launch { sendNow(file, kind, codec, placeholder, contactKey, ourNodeNum) }
+    }
+
+    /** False when nothing was sent or the sending stopped part way. */
+    internal suspend fun sendNow(
         file: ByteArray,
         kind: Int,
         codec: Int,
