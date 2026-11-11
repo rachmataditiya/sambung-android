@@ -30,6 +30,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.meshtastic.app.BuildConfig
@@ -40,6 +42,7 @@ import org.meshtastic.core.model.util.TimeConstants
 import org.meshtastic.core.navigation.TopLevelDestination
 import org.meshtastic.core.navigation.rememberMultiBackstack
 import org.meshtastic.core.repository.PlatformAnalytics
+import org.meshtastic.core.repository.usecase.SambungOutbox
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.app_too_old
 import org.meshtastic.core.resources.must_update
@@ -59,6 +62,7 @@ import org.meshtastic.feature.settings.navigation.rememberSettingsRadioConfigVie
 import org.meshtastic.feature.settings.navigation.settingsGraph
 import org.meshtastic.feature.settings.radio.channel.channelsGraph
 import org.meshtastic.feature.wifiprovision.navigation.wifiProvisionGraph
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MainScreen() {
@@ -84,6 +88,15 @@ fun MainScreen() {
     LaunchedEffect(lockdownState) {
         if (lockdownState is LockdownState.LockNowAcknowledged) {
             viewModel.setDeviceAddress("n")
+        }
+    }
+
+    // Sambung: failed messages go out again once the people they were for are back in range.
+    val outbox = koinInject<SambungOutbox>()
+    LaunchedEffect(outbox) {
+        while (true) {
+            runCatching { outbox.runOnce() }.onFailure { if (it is CancellationException) throw it }
+            delay(SAMBUNG_OUTBOX_INTERVAL)
         }
     }
 
@@ -121,6 +134,8 @@ fun MainScreen() {
         }
     }
 }
+
+private val SAMBUNG_OUTBOX_INTERVAL = 60.seconds
 
 private fun initialRoute(deviceAddress: String?): NavKey = // Sambung: a messenger opens on its conversations.
     if (DeviceAddress.parse(deviceAddress) == null) {

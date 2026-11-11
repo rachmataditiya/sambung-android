@@ -29,6 +29,9 @@ import org.meshtastic.proto.MeshPacket
 /** Stable identity of one persisted packet row within its owning node database. */
 data class PersistedPacketId(val myNodeNum: Int, val uuid: Long)
 
+/** Sambung: a text message this node sent that failed, with what the outbox needs to decide on a retry. */
+data class FailedOutgoingMessage(val uuid: Long, val contactKey: String, val sentAtMillis: Long, val routingError: Int)
+
 /** A persisted packet paired with the stable row identity needed by durable background work. */
 data class PersistedPacket(val id: PersistedPacketId, val packet: DataPacket)
 
@@ -87,6 +90,9 @@ interface PacketRepository {
 
     /** Returns all sent packets still awaiting a routing ACK/NAK, including stable persisted-row identities. */
     suspend fun getEnroutePackets(): List<PersistedPacket>
+
+    /** Sambung: the text messages this node sent that ended in an error. Empty unless a repository provides them. */
+    suspend fun getFailedOutgoingMessages(): List<FailedOutgoingMessage> = emptyList()
 
     /** Returns all sent reactions still awaiting a routing ACK/NAK, including stable persisted-row identities. */
     suspend fun getEnrouteReactions(): List<PersistedReaction>

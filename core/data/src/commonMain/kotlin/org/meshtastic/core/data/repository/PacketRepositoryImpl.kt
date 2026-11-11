@@ -42,6 +42,7 @@ import org.meshtastic.core.model.MessageStatus
 import org.meshtastic.core.model.Node
 import org.meshtastic.core.model.NodeAddress
 import org.meshtastic.core.model.Reaction
+import org.meshtastic.core.repository.FailedOutgoingMessage
 import org.meshtastic.core.repository.PersistedPacket
 import org.meshtastic.core.repository.PersistedPacketId
 import org.meshtastic.core.repository.PersistedReaction
@@ -131,6 +132,19 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
             .getAllPersistedPackets()
             .filter { it.data.status == MessageStatus.QUEUED }
             .map { PersistedPacket(id = PersistedPacketId(it.myNodeNum, it.uuid), packet = it.data) }
+    }
+
+    // shortcut: reads every stored packet and filters in memory, like the two queries around it; give it its own
+    // DAO query if message stores get large.
+    override suspend fun getFailedOutgoingMessages(): List<FailedOutgoingMessage> = dbManager.withReadDb { db ->
+        db.packetDao()
+            .getAllPersistedPackets()
+            .filter {
+                it.data.status == MessageStatus.ERROR &&
+                    it.data.dataType == PortNum.TEXT_MESSAGE_APP.value &&
+                    it.data.from == NodeAddress.ID_LOCAL
+            }
+            .map { FailedOutgoingMessage(it.uuid, it.contact_key, it.data.time, it.routingError) }
     }
 
     override suspend fun getEnroutePackets(): List<PersistedPacket> = dbManager.withReadDb { db ->

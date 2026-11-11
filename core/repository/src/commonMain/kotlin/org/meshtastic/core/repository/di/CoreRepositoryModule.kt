@@ -30,6 +30,7 @@ import org.meshtastic.core.repository.NodeRestartTracker
 import org.meshtastic.core.repository.PacketRepository
 import org.meshtastic.core.repository.PlatformAnalytics
 import org.meshtastic.core.repository.RadioController
+import org.meshtastic.core.repository.usecase.SambungOutbox
 import org.meshtastic.core.repository.usecase.SendMessageUseCase
 import org.meshtastic.core.repository.usecase.SendMessageUseCaseImpl
 
@@ -64,4 +65,11 @@ class CoreRepositoryModule {
         messageQueue,
         analytics,
     )
+
+    @Single
+    fun provideSambungOutbox(
+        @Provided packetRepository: PacketRepository,
+        @Provided nodeRepository: NodeRepository,
+        sendMessageUseCase: SendMessageUseCase,
+    ): SambungOutbox = SambungOutbox(packetRepository, nodeRepository, sendMessageUseCase)
 }
