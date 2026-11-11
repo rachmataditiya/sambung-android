@@ -975,6 +975,11 @@ internal fun MessageInput(
         if (mentionActive) {
             MentionSuggestions(suggestions = suggestions, onPick = ::insertMention)
         }
+        // Markdown formatting toolbar — shown once the field is focused and holds enough text to format (iOS parity).
+        // Sambung: above the field, so the field stays on the keyboard and level with the buttons beside it.
+        if (isEnabled && isFocused && currentText.length >= FORMATTING_TOOLBAR_MIN_CHARS) {
+            FormattingToolbar(state = textFieldState, modifier = Modifier.padding(horizontal = 8.dp))
+        }
         OutlinedTextField(
             modifier =
             Modifier.fillMaxWidth()
@@ -1065,10 +1070,6 @@ internal fun MessageInput(
                 }
             },
         )
-        // Markdown formatting toolbar — shown once the field is focused and holds enough text to format (iOS parity).
-        if (isEnabled && isFocused && currentText.length >= FORMATTING_TOOLBAR_MIN_CHARS) {
-            FormattingToolbar(state = textFieldState, modifier = Modifier.padding(horizontal = 8.dp))
-        }
     }
 }
 
