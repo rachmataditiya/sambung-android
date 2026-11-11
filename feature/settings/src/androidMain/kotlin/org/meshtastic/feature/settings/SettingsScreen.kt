@@ -48,6 +48,7 @@ import org.meshtastic.core.common.di.GOOGLE_SERVICES_AVAILABLE
 import org.meshtastic.core.common.util.UnitsOverride
 import org.meshtastic.core.common.util.nowMillis
 import org.meshtastic.core.model.effectiveLongName
+import org.meshtastic.core.navigation.ConnectionsRoute
 import org.meshtastic.core.navigation.FirmwareRoute
 import org.meshtastic.core.navigation.Route
 import org.meshtastic.core.navigation.SettingsRoute
@@ -57,13 +58,17 @@ import org.meshtastic.core.resources.app_functions_settings
 import org.meshtastic.core.resources.app_functions_settings_summary
 import org.meshtastic.core.resources.app_settings
 import org.meshtastic.core.resources.bottom_nav_settings
+import org.meshtastic.core.resources.connect
+import org.meshtastic.core.resources.connected
 import org.meshtastic.core.resources.device_links
 import org.meshtastic.core.resources.export_configuration
 import org.meshtastic.core.resources.filter_settings
 import org.meshtastic.core.resources.help_and_documentation
 import org.meshtastic.core.resources.import_configuration
 import org.meshtastic.core.resources.node_layout_section_title
+import org.meshtastic.core.resources.not_connected
 import org.meshtastic.core.resources.preferences_language
+import org.meshtastic.core.resources.sambung_pick_radio
 import org.meshtastic.core.resources.wifi_devices
 import org.meshtastic.core.ui.component.ListItem
 import org.meshtastic.core.ui.component.MeshtasticDialog
@@ -235,6 +240,25 @@ fun SettingsScreen(
                 // This phone's own settings are hidden below while administering another node; search hides them too.
                 includeAppLocal = state.isLocal,
             )
+
+            // Sambung: the connection screen is not a tab of its own; it opens from here.
+            if (state.isLocal) {
+                ExpressiveSection(title = stringResource(Res.string.connect)) {
+                    ListItem(
+                        text =
+                        if (isConnected) {
+                            ourNode?.effectiveLongName ?: stringResource(Res.string.connected)
+                        } else {
+                            stringResource(Res.string.not_connected)
+                        },
+                        supportingText =
+                        stringResource(if (isConnected) Res.string.connected else Res.string.sambung_pick_radio),
+                        leadingIcon = MeshtasticIcons.Device,
+                    ) {
+                        onNavigate(ConnectionsRoute.Connections())
+                    }
+                }
+            }
 
             RadioConfigItemList(
                 state = state,

@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
+import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
@@ -128,6 +129,15 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
+
+        // Sambung: Indonesian first. Once only, so a language picked in the app or in system settings stays.
+        val sambungPrefs = getSharedPreferences("sambung", MODE_PRIVATE)
+        if (!sambungPrefs.getBoolean("default_language_applied", false)) {
+            sambungPrefs.edit().putBoolean("default_language_applied", true).apply()
+            if (AppCompatDelegate.getApplicationLocales().isEmpty) {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("id"))
+            }
+        }
 
         if (!isSupportedDevice) {
             setContent { UnsupportedDeviceScreen() }

@@ -47,7 +47,8 @@ fun qualifierToLanguageTag(qualifier: String): String = when {
 }
 
 // aapt2 filters by literal qualifier, and AndroidX and Material still ship Hebrew as values-iw.
-private val LEGACY_QUALIFIER_ALIASES = mapOf("he" to "iw")
+// Sambung: likewise Indonesian, which they ship as values-in.
+private val LEGACY_QUALIFIER_ALIASES = mapOf("he" to "iw", "id" to "in")
 
 /** AGP `localeFilters` for [qualifiers]: `en`, each qualifier, and the legacy alias libraries use for it. */
 fun resourceLocaleFilters(qualifiers: List<String>): List<String> =

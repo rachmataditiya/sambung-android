@@ -19,11 +19,11 @@ package org.meshtastic.core.navigation
 import androidx.navigation3.runtime.NavKey
 import org.jetbrains.compose.resources.StringResource
 import org.meshtastic.core.resources.Res
-import org.meshtastic.core.resources.bottom_nav_settings
 import org.meshtastic.core.resources.connect
 import org.meshtastic.core.resources.map
-import org.meshtastic.core.resources.messages
-import org.meshtastic.core.resources.nodes
+import org.meshtastic.core.resources.sambung_tab_chat
+import org.meshtastic.core.resources.sambung_tab_device
+import org.meshtastic.core.resources.sambung_tab_network
 
 /**
  * Shared top-level destinations for the application shell.
@@ -32,15 +32,17 @@ import org.meshtastic.core.resources.nodes
  * and Desktop navigation shells.
  */
 enum class TopLevelDestination(val label: StringResource, val route: Route) {
-    Messages(Res.string.messages, ContactsRoute.Contacts),
-    Nodes(Res.string.nodes, NodesRoute.Nodes),
+    // Sambung: Chat, Network, Map, Device. Connect stays a destination but is not a tab of its own.
+    Messages(Res.string.sambung_tab_chat, ContactsRoute.Contacts),
+    Nodes(Res.string.sambung_tab_network, NodesRoute.Nodes),
     Map(Res.string.map, MapRoute.Map()),
-    Settings(Res.string.bottom_nav_settings, SettingsRoute.Settings()),
+    Settings(Res.string.sambung_tab_device, SettingsRoute.Settings()),
     Connect(Res.string.connect, ConnectionsRoute.Connections()),
     ;
 
     companion object {
-        fun fromNavKey(key: NavKey?): TopLevelDestination? =
-            entries.find { dest -> key?.let { it::class == dest.route::class } == true }
+        fun fromNavKey(key: NavKey?): TopLevelDestination? = entries.find { dest ->
+            key?.let { it::class == dest.route::class } == true
+        }
     }
 }

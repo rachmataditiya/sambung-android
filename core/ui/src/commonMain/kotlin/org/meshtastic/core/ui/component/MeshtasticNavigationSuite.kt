@@ -92,37 +92,39 @@ fun MeshtasticNavigationSuite(
     val topLevelDestination = TopLevelDestination.fromNavKey(currentTabRoute)
 
     val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo).coerceNavigationType()
-    val showLabels = layoutType == NavigationSuiteType.NavigationRail
 
     NavigationSuiteScaffold(
         modifier = modifier,
         layoutType = layoutType,
         navigationSuiteItems = {
-            TopLevelDestination.entries.forEach { destination ->
-                val isSelected = destination == topLevelDestination
-                item(
-                    selected = isSelected,
-                    onClick = { handleNavigation(destination, topLevelDestination, multiBackstack, uiViewModel) },
-                    icon = {
-                        NavigationIconContent(
-                            destination = destination,
-                            isSelected = isSelected,
-                            connectionState = connectionState,
-                            nodeRestartExpected = nodeRestartExpected,
-                            watchdogReconnectInFlight = watchdogReconnectInFlight,
-                            unreadMessageCount = unreadMessageCount,
-                            selectedDevice = selectedDevice,
-                            meshActivityFlow = uiViewModel.meshActivity,
-                        )
-                    },
-                    label =
-                    if (showLabels) {
-                        { Text(stringResource(destination.label)) }
-                    } else {
-                        null
-                    },
-                )
-            }
+            // Sambung: four tabs. The connection screen opens from the card on top of the device tab, which
+            // also stays selected while it shows and carries the radio's status on its icon.
+            TopLevelDestination.entries
+                .filter { it != TopLevelDestination.Connect }
+                .forEach { destination ->
+                    val isDeviceTab = destination == TopLevelDestination.Settings
+                    val isSelected =
+                        destination == topLevelDestination ||
+                            (isDeviceTab && topLevelDestination == TopLevelDestination.Connect)
+                    item(
+                        selected = isSelected,
+                        onClick = { handleNavigation(destination, topLevelDestination, multiBackstack, uiViewModel) },
+                        icon = {
+                            NavigationIconContent(
+                                destination = if (isDeviceTab) TopLevelDestination.Connect else destination,
+                                isSelected = isSelected,
+                                connectionState = connectionState,
+                                nodeRestartExpected = nodeRestartExpected,
+                                watchdogReconnectInFlight = watchdogReconnectInFlight,
+                                unreadMessageCount = unreadMessageCount,
+                                selectedDevice = selectedDevice,
+                                meshActivityFlow = uiViewModel.meshActivity,
+                            )
+                        },
+                        // Sambung: always labelled, so a tab never has to be guessed from its icon.
+                        label = { Text(stringResource(destination.label)) },
+                    )
+                }
         },
     ) {
         Row { content() }

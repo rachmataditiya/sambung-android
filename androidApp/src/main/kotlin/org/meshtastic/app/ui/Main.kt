@@ -122,9 +122,12 @@ fun MainScreen() {
     }
 }
 
-private fun initialRoute(deviceAddress: String?): NavKey =
-    // Sambung: a messenger opens on its conversations.
-    if (DeviceAddress.parse(deviceAddress) == null) TopLevelDestination.Connect.route else TopLevelDestination.Messages.route
+private fun initialRoute(deviceAddress: String?): NavKey = // Sambung: a messenger opens on its conversations.
+    if (DeviceAddress.parse(deviceAddress) == null) {
+        TopLevelDestination.Connect.route
+    } else {
+        TopLevelDestination.Messages.route
+    }
 
 @Composable
 @Suppress("LongMethod", "CyclomaticComplexMethod")

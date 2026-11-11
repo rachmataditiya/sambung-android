@@ -1863,6 +1863,13 @@ routing_error_too_large
 rssi
 rssi_definition
 salinity
+### SAMBUNG ###
+sambung_edit_contact
+sambung_pick_radio
+sambung_save_contact
+sambung_tab_chat
+sambung_tab_device
+sambung_tab_network
 sample_message
 sats
 save

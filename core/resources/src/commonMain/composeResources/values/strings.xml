@@ -1935,6 +1935,13 @@
     <string name="rssi">RSSI</string>
     <string name="rssi_definition">Received Signal Strength Indicator, a measurement used to determine the power level being received by the antenna. A higher RSSI value generally indicates a stronger and more stable connection.</string>
     <string name="salinity">Salinity</string>
+    <!-- SAMBUNG -->
+    <string name="sambung_edit_contact">Edit contact</string>
+    <string name="sambung_pick_radio">Tap to pick a radio</string>
+    <string name="sambung_save_contact">Save contact</string>
+    <string name="sambung_tab_chat">Chat</string>
+    <string name="sambung_tab_device">Device</string>
+    <string name="sambung_tab_network">Network</string>
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I'm kinda scared.</string>
     <string name="sats">Sats</string>
     <string name="save">Save</string>
