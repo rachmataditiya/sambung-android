@@ -1905,6 +1905,16 @@ sambung_reach_stale
 sambung_send_photo
 sambung_send_voice
 sambung_share_location
+sambung_sos_active
+sambung_sos_default_text
+sambung_sos_explain
+sambung_sos_hold
+sambung_sos_interval
+sambung_sos_primary_channel
+sambung_sos_send_to
+sambung_sos_stop
+sambung_sos_text
+sambung_sos_title
 sambung_tab_chat
 sambung_tab_device
 sambung_tab_network

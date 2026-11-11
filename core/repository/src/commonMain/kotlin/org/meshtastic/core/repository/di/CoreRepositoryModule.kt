@@ -22,6 +22,7 @@ import org.koin.core.annotation.Single
 import org.meshtastic.core.common.di.ApplicationCoroutineScope
 import org.meshtastic.core.repository.FirmwareUpdateStatusRepository
 import org.meshtastic.core.repository.HomoglyphPrefs
+import org.meshtastic.core.repository.LocationService
 import org.meshtastic.core.repository.MeshBeaconPrefs
 import org.meshtastic.core.repository.MeshBeaconRepository
 import org.meshtastic.core.repository.MessageQueue
@@ -30,6 +31,8 @@ import org.meshtastic.core.repository.NodeRestartTracker
 import org.meshtastic.core.repository.PacketRepository
 import org.meshtastic.core.repository.PlatformAnalytics
 import org.meshtastic.core.repository.RadioController
+import org.meshtastic.core.repository.SambungSos
+import org.meshtastic.core.repository.SambungSosPrefs
 import org.meshtastic.core.repository.usecase.SambungOutbox
 import org.meshtastic.core.repository.usecase.SendMessageUseCase
 import org.meshtastic.core.repository.usecase.SendMessageUseCaseImpl
@@ -65,6 +68,15 @@ class CoreRepositoryModule {
         messageQueue,
         analytics,
     )
+
+    @Single
+    fun provideSambungSos(
+        @Provided prefs: SambungSosPrefs,
+        sendMessageUseCase: SendMessageUseCase,
+        @Provided nodeRepository: NodeRepository,
+        @Provided locationService: LocationService,
+        @Provided applicationScope: ApplicationCoroutineScope,
+    ): SambungSos = SambungSos(prefs, sendMessageUseCase, nodeRepository, locationService, applicationScope)
 
     @Single
     fun provideSambungOutbox(

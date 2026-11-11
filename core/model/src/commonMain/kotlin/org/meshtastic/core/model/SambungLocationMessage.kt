@@ -45,6 +45,14 @@ object SambungLocationMessage {
         return if (onTheGlobe) latitude!! to longitude!! else null
     }
 
+    /** What a message says besides its position (an SOS call, a note), or null when the position is all there is. */
+    fun caption(text: String): String? {
+        val match = pattern.find(text)
+        // The bell an SOS starts with is for radios to ring, not for reading.
+        val rest = match?.let { text.removeRange(it.range).replace("\u0007", "").trim() }
+        return rest?.takeIf(String::isNotEmpty)
+    }
+
     /**
      * The text to send for a position. Five decimals is about a metre. The words are the iPhone app's and stay as they
      * are in every language, so both apps send the same message.

@@ -18,6 +18,7 @@
 
 package org.meshtastic.app.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.recalculateWindowInsets
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -55,6 +56,7 @@ import org.meshtastic.feature.discovery.navigation.discoveryGraph
 import org.meshtastic.feature.docs.navigation.docsEntries
 import org.meshtastic.feature.firmware.navigation.firmwareGraph
 import org.meshtastic.feature.map.navigation.mapGraph
+import org.meshtastic.feature.messaging.component.SambungSosBar
 import org.meshtastic.feature.messaging.navigation.contactsGraph
 import org.meshtastic.feature.node.navigation.nodesGraph
 import org.meshtastic.feature.settings.lockdown.LockdownDialog
@@ -106,31 +108,35 @@ fun MainScreen() {
             uiViewModel = viewModel,
             modifier = Modifier.fillMaxSize(),
         ) {
-            MeshtasticNavDisplay(
-                multiBackstack = multiBackstack,
-                entryProvider =
-                entryProvider<NavKey> {
-                    contactsGraph(backStack, scrollToTopEvents, onHandleDeepLink = viewModel::handleDeepLink)
-                    nodesGraph(
-                        backStack = backStack,
-                        scrollToTopEvents = scrollToTopEvents,
-                        onHandleDeepLink = viewModel::handleDeepLink,
-                        onNavigateToConnections = {
-                            multiBackstack.navigateTopLevel(TopLevelDestination.Connect.route)
-                        },
-                    )
-                    mapGraph(backStack)
-                    channelsGraph(backStack)
-                    connectionsGraph(backStack)
-                    discoveryGraph(backStack)
-                    settingsGraph(backStack, settingsRadioConfigViewModelProvider)
-                    docsEntries(backStack)
-                    firmwareGraph(backStack)
-                    wifiProvisionGraph(backStack)
-                },
-                modifier = Modifier.fillMaxSize().recalculateWindowInsets().safeDrawingPadding(),
-                analytics = koinInject<PlatformAnalytics>(),
-            )
+            // Sambung: while an SOS is running it shows above every screen, with the way to stop it.
+            Column(modifier = Modifier.fillMaxSize()) {
+                SambungSosBar()
+                MeshtasticNavDisplay(
+                    multiBackstack = multiBackstack,
+                    entryProvider =
+                    entryProvider<NavKey> {
+                        contactsGraph(backStack, scrollToTopEvents, onHandleDeepLink = viewModel::handleDeepLink)
+                        nodesGraph(
+                            backStack = backStack,
+                            scrollToTopEvents = scrollToTopEvents,
+                            onHandleDeepLink = viewModel::handleDeepLink,
+                            onNavigateToConnections = {
+                                multiBackstack.navigateTopLevel(TopLevelDestination.Connect.route)
+                            },
+                        )
+                        mapGraph(backStack)
+                        channelsGraph(backStack)
+                        connectionsGraph(backStack)
+                        discoveryGraph(backStack)
+                        settingsGraph(backStack, settingsRadioConfigViewModelProvider)
+                        docsEntries(backStack)
+                        firmwareGraph(backStack)
+                        wifiProvisionGraph(backStack)
+                    },
+                    modifier = Modifier.weight(1f).recalculateWindowInsets().safeDrawingPadding(),
+                    analytics = koinInject<PlatformAnalytics>(),
+                )
+            }
         }
     }
 }

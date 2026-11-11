@@ -1977,6 +1977,16 @@
     <string name="sambung_send_photo">Send photo</string>
     <string name="sambung_send_voice">Send voice message</string>
     <string name="sambung_share_location">Share my location</string>
+    <string name="sambung_sos_active">SOS on, sent %1$d times</string>
+    <string name="sambung_sos_default_text">Need help right now.</string>
+    <string name="sambung_sos_explain">Sends an emergency message with your position, again every %1$d minutes until you stop it. It stops by itself after an hour.</string>
+    <string name="sambung_sos_hold">Hold 2 seconds</string>
+    <string name="sambung_sos_interval">Repeat every %1$d minutes</string>
+    <string name="sambung_sos_primary_channel">Primary channel, everyone in range</string>
+    <string name="sambung_sos_send_to">Send to</string>
+    <string name="sambung_sos_stop">Stop SOS</string>
+    <string name="sambung_sos_text">Message</string>
+    <string name="sambung_sos_title">Emergency call</string>
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Device</string>
     <string name="sambung_tab_network">Network</string>

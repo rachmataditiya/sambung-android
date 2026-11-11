@@ -67,4 +67,12 @@ class SambungLocationMessageTest {
         assertEquals(4, SambungLocationMessage.compassPoint(here, -6.3 to 106.8)) // south
         assertEquals(5, SambungLocationMessage.compassPoint(here, -6.3 to 106.7)) // southwest
     }
+
+    @Test
+    fun anSosKeepsItsCallReadableBesideThePosition() {
+        val sos = "\u0007🆘 SOS Budi: Tolong\n📍 Lokasi saya: -6.20880, 106.84560"
+        assertEquals("🆘 SOS Budi: Tolong", SambungLocationMessage.caption(sos))
+        assertNull(SambungLocationMessage.caption("📍 Lokasi saya: -6.20880, 106.84560"))
+        assertNull(SambungLocationMessage.caption("no position here"))
+    }
 }

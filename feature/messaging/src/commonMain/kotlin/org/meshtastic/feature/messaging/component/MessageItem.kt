@@ -472,6 +472,10 @@ fun MessageItem(
                     } else if (SambungLocationMessage.coordinate(message.text) != null) {
                         // Sambung: a position sent as text is drawn as a location card.
                         SambungLocationMessage.coordinate(message.text)?.let { (latitude, longitude) ->
+                            // An SOS or a note sent along with the position stays readable above the card.
+                            SambungLocationMessage.caption(message.text)?.let {
+                                Text(text = it, style = MaterialTheme.typography.bodyLarge, color = contentColor)
+                            }
                             SambungLocationCard(
                                 latitude = latitude,
                                 longitude = longitude,

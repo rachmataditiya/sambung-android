@@ -442,6 +442,16 @@
     <string name="sambung_send_photo">Kirim foto</string>
     <string name="sambung_send_voice">Kirim pesan suara</string>
     <string name="sambung_share_location">Bagikan lokasiku</string>
+    <string name="sambung_sos_active">SOS aktif, terkirim %1$d kali</string>
+    <string name="sambung_sos_default_text">Butuh bantuan segera.</string>
+    <string name="sambung_sos_explain">Mengirim pesan darurat berisi posisimu, diulang tiap %1$d menit sampai kamu hentikan. Berhenti sendiri setelah satu jam.</string>
+    <string name="sambung_sos_hold">Tahan 2 detik</string>
+    <string name="sambung_sos_interval">Ulangi tiap %1$d menit</string>
+    <string name="sambung_sos_primary_channel">Channel utama, semua orang dalam jangkauan</string>
+    <string name="sambung_sos_send_to">Kirim ke</string>
+    <string name="sambung_sos_stop">Hentikan SOS</string>
+    <string name="sambung_sos_text">Isi pesan</string>
+    <string name="sambung_sos_title">Panggilan darurat</string>
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Perangkat</string>
     <string name="sambung_tab_network">Jaringan</string>
