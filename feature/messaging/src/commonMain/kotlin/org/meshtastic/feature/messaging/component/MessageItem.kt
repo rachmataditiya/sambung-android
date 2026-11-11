@@ -80,6 +80,7 @@ import org.meshtastic.core.model.Message
 import org.meshtastic.core.model.MessageStatus
 import org.meshtastic.core.model.Node
 import org.meshtastic.core.model.Reaction
+import org.meshtastic.core.model.SambungLocationMessage
 import org.meshtastic.core.model.effectiveLongName
 import org.meshtastic.core.model.isAckProofForged
 import org.meshtastic.core.resources.Res
@@ -462,6 +463,15 @@ fun MessageItem(
                             style = MaterialTheme.typography.bodyLarge,
                             color = contentColor,
                         )
+                    } else if (SambungLocationMessage.coordinate(message.text) != null) {
+                        // Sambung: a position sent as text is drawn as a location card.
+                        SambungLocationMessage.coordinate(message.text)?.let { (latitude, longitude) ->
+                            SambungLocationCard(
+                                latitude = latitude,
+                                longitude = longitude,
+                                contentColor = contentColor,
+                            )
+                        }
                     } else {
                         val mentionDisplayName =
                             remember(resolveMention) {

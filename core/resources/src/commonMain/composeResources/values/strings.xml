@@ -547,8 +547,8 @@
     <string name="disk_free_indexed">Disk Free %1$d</string>
     <string name="display">Display</string>
     <string name="display_config">Device Display</string>
-    <string name="display_name">Display name</string>
-    <string name="display_name_hint">Only shown on this device. Sharing and export use the node's real name.</string>
+    <string name="display_name">The person's name</string>
+    <string name="display_name_hint">Only kept on this phone. Sharing and export use the radio's own name.</string>
     <string name="dissolved_oxygen">Dissolved O₂</string>
     <!-- DISTANCE -->
     <string name="distance">Distance</string>
@@ -1936,9 +1936,20 @@
     <string name="rssi_definition">Received Signal Strength Indicator, a measurement used to determine the power level being received by the antenna. A higher RSSI value generally indicates a stronger and more stable connection.</string>
     <string name="salinity">Salinity</string>
     <!-- SAMBUNG -->
-    <string name="sambung_edit_contact">Edit contact</string>
+    <string name="sambung_ago_days">%1$d d ago</string>
+    <string name="sambung_ago_hours">%1$d h ago</string>
+    <string name="sambung_ago_minutes">%1$d min ago</string>
+    <string name="sambung_ago_now">just now</string>
+    <string name="sambung_heard_nodes">%1$d nodes heard in the last 2 hours</string>
+    <string name="sambung_heard_none">No other node heard yet</string>
+    <string name="sambung_location_open">Open in maps</string>
+    <string name="sambung_location_shared">Shared location</string>
     <string name="sambung_pick_radio">Tap to pick a radio</string>
-    <string name="sambung_save_contact">Save contact</string>
+    <string name="sambung_reach_direct">Heard directly, %1$s</string>
+    <string name="sambung_reach_internet">Heard over the internet, %1$s</string>
+    <string name="sambung_reach_never">Never heard</string>
+    <string name="sambung_reach_relays">Relay hops: %1$d, %2$s</string>
+    <string name="sambung_reach_stale">Last heard %1$s</string>
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Device</string>
     <string name="sambung_tab_network">Network</string>
@@ -2009,7 +2020,7 @@
     <string name="serial_config">Serial Config</string>
     <string name="session_active">Session active</string>
     <string name="session_refresh_required">Refresh required</string>
-    <string name="set_display_name">Set display name</string>
+    <string name="set_display_name">Save contact</string>
     <string name="set_time">Set time</string>
     <string name="set_up_connection">Set up connection</string>
     <string name="set_your_region">Set your region</string>

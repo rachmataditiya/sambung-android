@@ -23,6 +23,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -386,6 +387,7 @@ fun ActionModeTopBar(selectedCount: Int, onAction: (MessageMenuAction) -> Unit) 
 @Composable
 fun MessageTopBar(
     title: String,
+    subtitle: String? = null,
     channelIndex: Int?,
     mismatchKey: Boolean,
     onNavigateBack: () -> Unit,
@@ -404,12 +406,24 @@ fun MessageTopBar(
     onSearchClick: () -> Unit = {},
 ) = TopAppBar(
     title = {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Spacer(modifier = Modifier.width(10.dp))
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(modifier = Modifier.width(10.dp))
 
-            if (channels != null && channelIndexParam != null) {
-                SecurityIcon(channels, channelIndexParam)
+                if (channels != null && channelIndexParam != null) {
+                    SecurityIcon(channels, channelIndexParam)
+                }
+            }
+            // Sambung: whether a message is likely to get there.
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
     },

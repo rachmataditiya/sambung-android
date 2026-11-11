@@ -1864,9 +1864,20 @@ rssi
 rssi_definition
 salinity
 ### SAMBUNG ###
-sambung_edit_contact
+sambung_ago_days
+sambung_ago_hours
+sambung_ago_minutes
+sambung_ago_now
+sambung_heard_nodes
+sambung_heard_none
+sambung_location_open
+sambung_location_shared
 sambung_pick_radio
-sambung_save_contact
+sambung_reach_direct
+sambung_reach_internet
+sambung_reach_never
+sambung_reach_relays
+sambung_reach_stale
 sambung_tab_chat
 sambung_tab_device
 sambung_tab_network

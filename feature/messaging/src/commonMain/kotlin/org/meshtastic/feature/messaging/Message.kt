@@ -98,15 +98,19 @@ import org.meshtastic.core.model.Node
 import org.meshtastic.core.model.NodeAddress
 import org.meshtastic.core.model.QuickChatAction
 import org.meshtastic.core.model.effectiveLongName
+import org.meshtastic.core.model.sambungReach
 import org.meshtastic.core.model.util.getChannel
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.archived_channel_read_only
+import org.meshtastic.core.resources.sambung_heard_nodes
+import org.meshtastic.core.resources.sambung_heard_none
 import org.meshtastic.core.resources.send
 import org.meshtastic.core.resources.type_a_message
 import org.meshtastic.core.resources.unknown_channel
 import org.meshtastic.core.ui.component.InlineStyle
 import org.meshtastic.core.ui.component.ShareContactDialog
 import org.meshtastic.core.ui.component.smartScrollToIndex
+import org.meshtastic.core.ui.component.text
 import org.meshtastic.core.ui.icon.History
 import org.meshtastic.core.ui.icon.MeshtasticIcons
 import org.meshtastic.core.ui.icon.Send
@@ -246,6 +250,19 @@ fun MessageScreen(
                 NodeAddress.ID_BROADCAST -> channelName
                 else -> viewModel.getLongName(nodeId)
             }
+        }
+
+    // Sambung: under the title, whether a message is likely to get there.
+    val reachText =
+        if (nodeId == NodeAddress.ID_BROADCAST) {
+            val heard = nodes.count { it.isOnline && it.num != ourNode?.num }
+            if (heard > 0) {
+                stringResource(Res.string.sambung_heard_nodes, heard)
+            } else {
+                stringResource(Res.string.sambung_heard_none)
+            }
+        } else {
+            viewModel.getNode(nodeId).sambungReach().text()
         }
 
     val isMismatchKey =
@@ -456,6 +473,7 @@ fun MessageScreen(
             } else {
                 MessageTopBar(
                     title = title,
+                    subtitle = reachText,
                     channelIndex = channelIndex,
                     mismatchKey = isMismatchKey,
                     onNavigateBack = { onEvent(MessageScreenEvent.NavigateBack) },
