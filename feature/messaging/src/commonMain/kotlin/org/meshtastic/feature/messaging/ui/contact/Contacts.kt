@@ -143,6 +143,7 @@ import org.meshtastic.core.ui.icon.VolumeUp
 import org.meshtastic.core.ui.util.parseDeepLinkOrInvalid
 import org.meshtastic.core.ui.util.rememberShowToastResource
 import org.meshtastic.feature.messaging.component.SambungNewMessageButton
+import org.meshtastic.feature.messaging.component.SambungSearchButton
 import org.meshtastic.feature.messaging.component.SambungSosButton
 import org.meshtastic.proto.ChannelSet
 import kotlin.time.Duration.Companion.days
@@ -260,6 +261,7 @@ fun ContactsScreen(
                     // Sambung: the emergency call is one tap away from the first screen.
                     SambungSosButton()
                     SambungNewMessageButton(onOpen = onNavigateToMessages)
+                    SambungSearchButton(onOpen = onNavigateToMessages)
                     IconButton(onClick = onNavigateToFilterSettings) {
                         Icon(
                             MeshtasticIcons.FilterList,

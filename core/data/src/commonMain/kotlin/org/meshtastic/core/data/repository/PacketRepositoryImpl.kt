@@ -48,6 +48,7 @@ import org.meshtastic.core.repository.PersistedPacketId
 import org.meshtastic.core.repository.PersistedReaction
 import org.meshtastic.core.repository.PersistedReactionId
 import org.meshtastic.core.repository.SambungMediaBoard
+import org.meshtastic.core.repository.SambungSearchHit
 import org.meshtastic.proto.MeshPacket
 import org.meshtastic.proto.PortNum
 import org.meshtastic.core.database.entity.ContactSettings as ContactSettingsEntity
@@ -612,6 +613,21 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
         transportMechanism = transportMechanism,
     )
 
+    override suspend fun searchAllConversations(query: String): List<SambungSearchHit> {
+        val sanitized = sanitizeFtsQuery(query)
+        return if (sanitized.isBlank()) {
+            emptyList()
+        } else {
+            dbManager.withReadDb { db ->
+                db.packetDao()
+                    .searchMessages(sanitized)
+                    .sortedByDescending { it.received_time }
+                    .take(SAMBUNG_SEARCH_LIMIT)
+                    .map { SambungSearchHit(it.contact_key, it.data.from, it.data.text.orEmpty(), it.received_time) }
+            }
+        }
+    }
+
     override fun searchMessages(query: String, contactKey: String?, getNode: (String?) -> Node): Flow<List<Message>> {
         val sanitized = sanitizeFtsQuery(query)
         if (sanitized.isBlank()) return flowOf(emptyList())
@@ -672,3 +688,5 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
 
 /** Under SQLite's bind-parameter limit. */
 private const val SAMBUNG_ID_LOOKUP_CHUNK = 900
+
+private const val SAMBUNG_SEARCH_LIMIT = 50
