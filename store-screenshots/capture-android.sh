@@ -43,7 +43,7 @@ runner=$(adb shell pm list instrumentation | tr -d '\r' | sed -n 's/^instrumenta
 adb logcat -c || true
 # am instrument exits 0 whatever the test does; the verdict is its "OK (1 test)" line.
 adb shell am instrument -w -r \
-  -e targetAppId "com.geeksville.mesh.$FLAVOR.debug" \
+  -e targetAppId "app.arkana.sambung.$FLAVOR.debug" \
   -e flavor "$FLAVOR" \
   "$runner" | tr -d '\r' | tee "$RESULTS/instrument.txt"
 adb logcat -d > "$RESULTS/logcat.txt"
