@@ -70,7 +70,11 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.runtime.compose)
         }
 
-        androidMain.dependencies { implementation(libs.androidx.activity.compose) }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            // Sambung: the voice codec.
+            implementation(projects.core.codec2)
+        }
 
         commonTest.dependencies {
             implementation(projects.core.testing)

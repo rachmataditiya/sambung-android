@@ -89,6 +89,7 @@ toolchainManagement {
 
 include(
     ":core:ble",
+    ":core:codec2",
     ":core:common",
     ":core:data",
     ":core:database",

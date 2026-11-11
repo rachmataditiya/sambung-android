@@ -18,15 +18,19 @@ package org.meshtastic.feature.messaging.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -45,7 +49,12 @@ import org.meshtastic.core.resources.sambung_media_receiving
 import org.meshtastic.core.resources.sambung_media_sending
 import org.meshtastic.core.resources.sambung_media_unreadable
 import org.meshtastic.core.resources.sambung_photo
-import org.meshtastic.core.resources.sambung_voice_not_playable
+import org.meshtastic.core.resources.sambung_voice_message
+import org.meshtastic.core.resources.sambung_voice_play
+import org.meshtastic.core.ui.icon.MeshtasticIcons
+import org.meshtastic.core.ui.icon.PlayArrow
+import org.meshtastic.core.ui.util.sambungPlayVoice
+import org.meshtastic.core.ui.util.sambungVoiceSeconds
 
 /**
  * The photo (or voice clip) that travelled with a message, above its text: the picture once it is whole, and how far
@@ -74,6 +83,26 @@ internal fun SambungMediaView(senderNodeNum: Int, packetId: Int, contentColor: C
                     modifier = Modifier.size(PHOTO_SIZE).clip(RoundedCornerShape(PHOTO_CORNER)),
                 )
             }
+            val voice = media.bytes?.takeIf { !isImage }
+            if (voice != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { sambungPlayVoice(voice) }) {
+                        Icon(
+                            imageVector = MeshtasticIcons.PlayArrow,
+                            contentDescription = stringResource(Res.string.sambung_voice_play),
+                            tint = contentColor,
+                        )
+                    }
+                    Text(
+                        text =
+                        stringResource(Res.string.sambung_voice_message) +
+                            " " +
+                            sambungDurationText(sambungVoiceSeconds(voice)),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = contentColor,
+                    )
+                }
+            }
             status(media, isImage = isImage, readable = bitmap != null)?.let {
                 Text(text = it, style = MaterialTheme.typography.labelSmall, color = contentColor)
             }
@@ -96,7 +125,7 @@ private fun status(media: SambungMedia, isImage: Boolean, readable: Boolean): St
     !media.isOutgoing && media.bytes == null ->
         stringResource(Res.string.sambung_media_receiving, media.received, media.total)
 
-    !isImage -> stringResource(Res.string.sambung_voice_not_playable)
+    !isImage -> null
 
     !readable -> stringResource(Res.string.sambung_media_unreadable)
 

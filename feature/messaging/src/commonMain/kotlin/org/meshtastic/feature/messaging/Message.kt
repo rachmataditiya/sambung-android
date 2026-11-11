@@ -127,6 +127,7 @@ import org.meshtastic.feature.messaging.component.MessageTopBar
 import org.meshtastic.feature.messaging.component.QuickChatRow
 import org.meshtastic.feature.messaging.component.ReplySnippet
 import org.meshtastic.feature.messaging.component.SambungPhotoButton
+import org.meshtastic.feature.messaging.component.SambungVoiceButton
 import org.meshtastic.feature.messaging.component.ScrollToBottomFab
 import org.meshtastic.feature.messaging.component.TranslationModelDownloadDialog
 
@@ -530,7 +531,10 @@ fun MessageScreen(
                                     (channelIndex?.let { channels?.getChannel(it)?.settings?.psk?.size } ?: 0) > 1
                                 )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (photoAllowed) SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
+                        if (photoAllowed) {
+                            SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
+                            SambungVoiceButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
+                        }
                         MessageInput(
                             isEnabled = connectionState is ConnectionState.Connected,
                             isHomoglyphEncodingEnabled = homoglyphEncodingEnabled,
