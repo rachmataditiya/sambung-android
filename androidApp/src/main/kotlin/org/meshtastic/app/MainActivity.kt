@@ -131,11 +131,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Sambung: Indonesian first. Once only, so a language picked in the app or in system settings stays.
+        // On the very first launch AppCompat's own sync can clear the choice a moment later, so it only counts
+        // as applied once a language is seen to be set; setting it recreates this activity, which lands here again.
         val sambungPrefs = getSharedPreferences("sambung", MODE_PRIVATE)
         if (!sambungPrefs.getBoolean("default_language_applied", false)) {
-            sambungPrefs.edit().putBoolean("default_language_applied", true).apply()
             if (AppCompatDelegate.getApplicationLocales().isEmpty) {
                 AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("id"))
+            } else {
+                sambungPrefs.edit().putBoolean("default_language_applied", true).apply()
             }
         }
 
