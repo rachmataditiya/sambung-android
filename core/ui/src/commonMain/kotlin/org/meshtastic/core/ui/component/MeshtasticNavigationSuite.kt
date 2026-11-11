@@ -23,6 +23,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,11 +42,13 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.stringResource
@@ -91,7 +95,15 @@ fun MeshtasticNavigationSuite(
     val currentTabRoute = multiBackstack.currentTabRoute
     val topLevelDestination = TopLevelDestination.fromNavKey(currentTabRoute)
 
-    val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo).coerceNavigationType()
+    val adaptiveType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo).coerceNavigationType()
+    // Sambung: on a phone a conversation fills the screen, as in any messenger, and the tabs give way to the
+    // keyboard: left in place they sit behind it and leave a gap of their own height above it.
+    val inConversation = multiBackstack.activeBackStack.lastOrNull() is ContactsRoute.Messages
+    val ime = WindowInsets.ime
+    val density = LocalDensity.current
+    val isKeyboardOpen by remember(ime, density) { derivedStateOf { ime.getBottom(density) > 0 } }
+    val hidesBar = adaptiveType == NavigationSuiteType.NavigationBar && (inConversation || isKeyboardOpen)
+    val layoutType = if (hidesBar) NavigationSuiteType.None else adaptiveType
 
     NavigationSuiteScaffold(
         modifier = modifier,

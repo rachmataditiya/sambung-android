@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -44,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -62,6 +64,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isShiftPressed
@@ -137,6 +140,9 @@ import org.meshtastic.feature.messaging.component.ScrollToBottomFab
 import org.meshtastic.feature.messaging.component.TranslationModelDownloadDialog
 
 private const val ROUNDED_CORNER_PERCENT = 100
+
+/** The single-line field with its padding; a button centred in this height lines up with the field's last line. */
+private val COMPOSER_BAR_HEIGHT = 64.dp
 private const val MAX_LINES = 3
 
 // Minimum draft length before the markdown formatting toolbar appears (matches the iOS client).
@@ -546,22 +552,24 @@ fun MessageScreen(
                                 nodeId != NodeAddress.ID_BROADCAST ||
                                     (channelIndex?.let { channels?.getChannel(it)?.settings?.psk?.size } ?: 0) > 1
                                 )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Sambung: laid out like other messengers. The buttons stay level with the last line of the
+                    // field, and the talk button stands where send is until there is something to send.
+                    Row(modifier = Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.Bottom) {
                         if (connectionState is ConnectionState.Connected && !isRetiredChannel) {
-                            SambungLocationButton(textFieldState = messageInputState, ourNode = ourNode)
+                            ComposerSlot {
+                                SambungLocationButton(textFieldState = messageInputState, ourNode = ourNode)
+                            }
                         }
                         if (photoAllowed) {
-                            SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
-                            SambungTalkButton(
-                                contactKey = contactKey,
-                                ourNodeNum = ourNode?.num,
-                                onTalk = { talk = it },
-                            )
+                            ComposerSlot { SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num) }
                         }
                         // Push to talk: while the button is held, the field gives way to the recording strip.
                         val talking = talk
                         if (talking != null) {
-                            SambungTalkStrip(state = talking, modifier = Modifier.weight(1f))
+                            SambungTalkStrip(
+                                state = talking,
+                                modifier = Modifier.weight(1f).height(COMPOSER_BAR_HEIGHT),
+                            )
                         } else {
                             MessageInput(
                                 isEnabled = connectionState is ConnectionState.Connected,
@@ -569,6 +577,7 @@ fun MessageScreen(
                                 textFieldState = messageInputState,
                                 mentionCandidates = mentionCandidates,
                                 modifier = Modifier.weight(1f),
+                                hidesIdleSend = photoAllowed,
                                 onSendMessage = {
                                     val messageText = messageInputState.text.toString().trim { it.isWhitespace() }
                                     if (messageText.isNotEmpty()) {
@@ -576,6 +585,15 @@ fun MessageScreen(
                                     }
                                 },
                             )
+                        }
+                        if (photoAllowed && (talking != null || messageInputState.text.isEmpty())) {
+                            ComposerSlot(modifier = Modifier.padding(horizontal = 4.dp)) {
+                                SambungTalkButton(
+                                    contactKey = contactKey,
+                                    ourNodeNum = ourNode?.num,
+                                    onTalk = { talk = it },
+                                )
+                            }
                         }
                     }
                 }
@@ -634,6 +652,11 @@ fun MessageScreen(
             }
         }
     }
+}
+
+@Composable
+private fun ComposerSlot(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(modifier = modifier.height(COMPOSER_BAR_HEIGHT), contentAlignment = Alignment.Center) { content() }
 }
 
 /**
@@ -893,6 +916,7 @@ internal fun MessageInput(
     mentionCandidates: ImmutableMap<String, MentionCandidate>,
     modifier: Modifier = Modifier,
     maxByteSize: Int = MESSAGE_CHARACTER_LIMIT_BYTES,
+    hidesIdleSend: Boolean = false,
     onSendMessage: () -> Unit,
 ) {
     val currentTextRaw = textFieldState.text.toString()
@@ -954,7 +978,7 @@ internal fun MessageInput(
         OutlinedTextField(
             modifier =
             Modifier.fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .padding(horizontal = 4.dp, vertical = 4.dp)
                 .onFocusChanged { isFocused = it.isFocused }
                 // Tunnel phase, not bubble: a multi-line field consumes Enter to insert its newline, so an
                 // Enter-to-send shortcut has to claim the event before the field ever sees it.
@@ -976,15 +1000,27 @@ internal fun MessageInput(
             enabled = isEnabled,
             shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT.toFloat()),
             isError = isOverLimit,
+            // Sambung: a filled pill without an outline, the way messengers draw the field.
+            colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                disabledBorderColor = Color.Transparent,
+            ),
             placeholder = { Text(stringResource(Res.string.type_a_message)) },
             // A multi-line field must keep its Enter key: Compose only sets IME_FLAG_NO_ENTER_ACTION for
             // ImeAction.Default, and without it an IME may swap Enter for the action, leaving no way to type a newline.
             keyboardOptions =
             KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Default),
-            supportingText = {
-                // The counter is only useful as the limit approaches. Showing 0/200 before a character is typed is
-                // chrome that every chat client has learned to hide.
-                if (isEnabled && currentByteLength >= maxByteSize - COUNTER_VISIBLE_WITHIN_BYTES) {
+            // The counter is only useful as the limit approaches. Showing 0/200 before a character is typed is
+            // chrome that every chat client has learned to hide; without it the slot is left out, so it does not
+            // hold empty room under the field.
+            supportingText =
+            if (isEnabled && currentByteLength >= maxByteSize - COUNTER_VISIBLE_WITHIN_BYTES) {
+                {
                     Text(
                         text = "$currentByteLength/$maxByteSize",
                         style = MaterialTheme.typography.bodySmall,
@@ -998,26 +1034,34 @@ internal fun MessageInput(
                         textAlign = TextAlign.End,
                     )
                 }
+            } else {
+                null
             },
             // Direct byte limiting via inputTransformation in TextFieldState is complex.
             // The current approach (show error, disable send) is generally preferred for UX.
             // If strict real-time byte trimming is required, it needs careful handling of
             // cursor position and multi-byte characters, likely outside simple inputTransformation.
-            trailingIcon = {
-                // Colour, not just enablement, carries "this will send" — a greyed-out icon reads as broken rather
-                // than as waiting for input.
-                val sendEnabled = isEnabled && (canSend || mentionActive)
-                IconButton(onClick = onSendAction, enabled = sendEnabled) {
-                    Icon(
-                        imageVector = MeshtasticIcons.Send,
-                        contentDescription = stringResource(Res.string.send),
-                        tint =
-                        if (sendEnabled) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
+            trailingIcon =
+            if (hidesIdleSend && currentText.isEmpty()) {
+                null
+            } else {
+                {
+                    // Colour, not just enablement, carries "this will send" — a greyed-out icon reads as broken
+                    // rather
+                    // than as waiting for input.
+                    val sendEnabled = isEnabled && (canSend || mentionActive)
+                    IconButton(onClick = onSendAction, enabled = sendEnabled) {
+                        Icon(
+                            imageVector = MeshtasticIcons.Send,
+                            contentDescription = stringResource(Res.string.send),
+                            tint =
+                            if (sendEnabled) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                    }
                 }
             },
         )
