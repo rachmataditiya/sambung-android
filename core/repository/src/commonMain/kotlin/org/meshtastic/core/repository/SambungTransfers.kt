@@ -17,6 +17,10 @@
 package org.meshtastic.core.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toPath
 import org.meshtastic.proto.MeshPacket
 
 /**
@@ -38,16 +42,79 @@ data class SambungMedia(
 )
 
 /**
- * Where the transfers put their files and the message list finds them.
- *
- * shortcut: one in-memory map for the whole app, so a file is gone after the app is restarted and the message shows its
- * plain text again; store the files on disk when photos should survive a restart.
+ * Where the transfers put their files and the message list finds them. Whole files are also kept in a folder, once one
+ * is attached, so a photo or voice clip is still there after the app is restarted. A transfer that is still under way
+ * lives in memory only.
  */
 object SambungMediaBoard {
     val media = MutableStateFlow<Map<String, SambungMedia>>(emptyMap())
 
+    private var fileSystem: FileSystem = FileSystem.SYSTEM
+    private var directory: Path? = null
+
     /** A file is filed under the node that sent the message and the message's packet id. */
     fun key(senderNodeNum: Int, messagePacketId: Int): String = "${senderNodeNum.toUInt()}-${messagePacketId.toUInt()}"
+
+    /** Starts keeping whole files in [directoryPath] and brings back the ones already there. */
+    fun attach(directoryPath: String, files: FileSystem = FileSystem.SYSTEM) {
+        val folder = directoryPath.toPath()
+        fileSystem = files
+        directory = folder
+        runCatching {
+            files.createDirectories(folder)
+            val kept =
+                files.list(folder).mapNotNull { path -> read(path)?.let { path.name.substringBefore('.') to it } }
+            media.update { kept.toMap() + it }
+        }
+    }
+
+    /** Shows [item] under [key]; a whole file is written to the folder too. */
+    fun put(key: String, item: SambungMedia) {
+        media.update { it + (key to item) }
+        val folder = directory
+        val bytes = item.bytes
+        if (folder != null && bytes != null) {
+            runCatching { fileSystem.write(folder / fileName(key, item)) { write(bytes) } }
+        }
+    }
+
+    /** Changes what is shown under [key], if anything is: progress and status, which are not kept on disk. */
+    fun update(key: String, change: (SambungMedia) -> SambungMedia) {
+        media.update { all -> all[key]?.let { all + (key to change(it)) } ?: all }
+    }
+
+    /** A photo or voice clip goes when its message does. */
+    fun forgetMessages(packetIds: Collection<Int>) {
+        val suffixes = packetIds.map { "-${it.toUInt()}" }
+        val gone = media.value.keys.filter { key -> suffixes.any(key::endsWith) }
+        if (gone.isNotEmpty()) {
+            media.update { it - gone.toSet() }
+            val folder = directory ?: return
+            runCatching {
+                fileSystem.list(folder).filter { it.name.substringBefore('.') in gone }.forEach(fileSystem::delete)
+            }
+        }
+    }
+
+    // "<key>.<kind>.<codec>.<o|i>": everything needed to show the file again is in its name.
+    private fun fileName(key: String, item: SambungMedia) =
+        "$key.${item.kind}.${item.codec}.${if (item.isOutgoing) OUTGOING else INCOMING}"
+
+    private fun read(path: Path): SambungMedia? {
+        val parts = path.name.split('.')
+        val kind = parts.getOrNull(1)?.toIntOrNull()
+        val codec = parts.getOrNull(2)?.toIntOrNull()
+        return if (parts.size == NAME_PARTS && kind != null && codec != null) {
+            val bytes = fileSystem.read(path) { readByteArray() }
+            SambungMedia(kind, codec, received = 1, total = 1, isOutgoing = parts[3] == OUTGOING, bytes = bytes)
+        } else {
+            null
+        }
+    }
+
+    private const val OUTGOING = "o"
+    private const val INCOMING = "i"
+    private const val NAME_PARTS = 4
 }
 
 /** Sends and receives files over the mesh with the packets in `SambungTransferWire`. */

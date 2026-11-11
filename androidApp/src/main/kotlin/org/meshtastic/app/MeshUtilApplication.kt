@@ -55,6 +55,7 @@ import org.meshtastic.core.common.log.RoomPoolTimeoutLog
 import org.meshtastic.core.database.DatabaseManager
 import org.meshtastic.core.repository.MeshPrefs
 import org.meshtastic.core.repository.PlatformAnalytics
+import org.meshtastic.core.repository.SambungMediaBoard
 import org.meshtastic.core.repository.ServiceRepository
 import org.meshtastic.core.resources.Res
 import org.meshtastic.core.resources.discovery_interrupted_scan_restored
@@ -121,6 +122,9 @@ open class MeshUtilApplication :
             androidContext(this@MeshUtilApplication)
             workManagerFactory()
         }
+
+        // Sambung: photos and voice clips that arrived stay in the app's own storage.
+        SambungMediaBoard.attach(filesDir.resolve("sambung-media").absolutePath)
 
         startBackgroundInit()
     }

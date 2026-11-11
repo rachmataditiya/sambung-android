@@ -20,7 +20,6 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -112,21 +111,18 @@ class SambungTransfersImpl(
         entry.assembler.manifest?.let { manifest ->
             val file = entry.assembler.file()
             entry.finished = file != null || entry.assembler.isCorrupt
-            SambungMediaBoard.media.update {
-                it +
-                    (
-                        SambungMediaBoard.key(packet.from, manifest.messageId.toInt()) to
-                            SambungMedia(
-                                kind = manifest.kind,
-                                codec = manifest.codec,
-                                received = entry.assembler.receivedCount,
-                                total = manifest.chunkCount,
-                                isOutgoing = false,
-                                failed = entry.assembler.isCorrupt,
-                                bytes = file,
-                            )
-                        )
-            }
+            SambungMediaBoard.put(
+                SambungMediaBoard.key(packet.from, manifest.messageId.toInt()),
+                SambungMedia(
+                    kind = manifest.kind,
+                    codec = manifest.codec,
+                    received = entry.assembler.receivedCount,
+                    total = manifest.chunkCount,
+                    isOutgoing = false,
+                    failed = entry.assembler.isCorrupt,
+                    bytes = file,
+                ),
+            )
             if (file != null && entry.isDirect) reply(Packet.Complete(id), packet.from, entry.replyChannel)
         }
         entry.watchdog?.cancel()
@@ -201,7 +197,7 @@ class SambungTransfersImpl(
         val toNum = if (isDirect) to.removePrefix("!").toLongOrNull(HEX)?.toInt() else null
         mutex.withLock { outgoing[id] = Outgoing(packets, to, toNum, parsed.channel, key) }
         // The sender keeps the file too, so its own bubble shows it; "received" then counts packets sent.
-        SambungMediaBoard.media.update { it + (key to SambungMedia(kind, codec, 0, packets.size, true, bytes = file)) }
+        SambungMediaBoard.put(key, SambungMedia(kind, codec, 0, packets.size, true, bytes = file))
 
         var sentCount = 0
         val sentAll = packets.all { packet ->
@@ -234,9 +230,7 @@ class SambungTransfersImpl(
             }
             .isSuccess
 
-    private fun update(key: String, change: (SambungMedia) -> SambungMedia) {
-        SambungMediaBoard.media.update { all -> all[key]?.let { all + (key to change(it)) } ?: all }
-    }
+    private fun update(key: String, change: (SambungMedia) -> SambungMedia) = SambungMediaBoard.update(key, change)
 
     private companion object {
         /** One full packet is about two seconds on air with LongFast, and the radio's send queue is short. */

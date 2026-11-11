@@ -47,6 +47,7 @@ import org.meshtastic.core.repository.PersistedPacket
 import org.meshtastic.core.repository.PersistedPacketId
 import org.meshtastic.core.repository.PersistedReaction
 import org.meshtastic.core.repository.PersistedReactionId
+import org.meshtastic.core.repository.SambungMediaBoard
 import org.meshtastic.proto.MeshPacket
 import org.meshtastic.proto.PortNum
 import org.meshtastic.core.database.entity.ContactSettings as ContactSettingsEntity
@@ -452,7 +453,14 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
     }
 
     override suspend fun deleteMessages(uuidList: List<Long>) {
-        withContext(dispatchers.io) { dbManager.withDb { it.packetDao().deleteMessagesAtomic(uuidList) } }
+        withContext(dispatchers.io) {
+            // Sambung: a photo or voice clip goes when its message does.
+            val packetIds = dbManager.withReadDb { db ->
+                uuidList.chunked(SAMBUNG_ID_LOOKUP_CHUNK).flatMap { db.packetDao().getPacketIdsFrom(it) }
+            }
+            dbManager.withDb { it.packetDao().deleteMessagesAtomic(uuidList) }
+            SambungMediaBoard.forgetMessages(packetIds)
+        }
     }
 
     override suspend fun resendMessage(
@@ -481,7 +489,16 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
     }
 
     override suspend fun deleteContacts(contactList: List<String>) {
-        withContext(dispatchers.io) { dbManager.withDb { it.packetDao().deleteContacts(contactList) } }
+        withContext(dispatchers.io) {
+            val packetIds = sambungPacketIds { it.contact_key in contactList }
+            dbManager.withDb { it.packetDao().deleteContacts(contactList) }
+            SambungMediaBoard.forgetMessages(packetIds)
+        }
+    }
+
+    /** Sambung: the packet ids of the stored messages [matching], whose photos and voice clips are about to go. */
+    private suspend fun sambungPacketIds(matching: (RoomPacket) -> Boolean): List<Int> = dbManager.withReadDb { db ->
+        db.packetDao().getAllPersistedPackets().filter(matching).map { it.packetId }
     }
 
     override suspend fun deleteWaypoint(id: Int) {
@@ -546,7 +563,11 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
     }
 
     override suspend fun clearPacketDB() {
-        withContext(dispatchers.io) { dbManager.withDb { it.packetDao().deleteAll() } }
+        withContext(dispatchers.io) {
+            val packetIds = sambungPacketIds { true }
+            dbManager.withDb { it.packetDao().deleteAll() }
+            SambungMediaBoard.forgetMessages(packetIds)
+        }
     }
 
     override suspend fun updateFilteredBySender(senderId: String, filtered: Boolean) {
@@ -648,3 +669,6 @@ class PacketRepositoryImpl(private val dbManager: DatabaseProvider, private val 
         private const val MESSAGES_PAGE_SIZE = 50
     }
 }
+
+/** Under SQLite's bind-parameter limit. */
+private const val SAMBUNG_ID_LOOKUP_CHUNK = 900
