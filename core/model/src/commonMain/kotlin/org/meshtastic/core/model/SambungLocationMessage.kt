@@ -29,10 +29,14 @@ object SambungLocationMessage {
 
     /** Latitude and longitude in [text], or null when it carries no valid position. */
     fun coordinate(text: String): Pair<Double, Double>? {
-        val match = pattern.find(text) ?: return null
-        val latitude = match.groupValues[1].toDoubleOrNull() ?: return null
-        val longitude = match.groupValues[2].toDoubleOrNull() ?: return null
-        if (latitude !in -MAX_LATITUDE..MAX_LATITUDE || longitude !in -MAX_LONGITUDE..MAX_LONGITUDE) return null
-        return latitude to longitude
+        val match = pattern.find(text)
+        val latitude = match?.groupValues?.get(1)?.toDoubleOrNull()
+        val longitude = match?.groupValues?.get(2)?.toDoubleOrNull()
+        val onTheGlobe =
+            latitude != null &&
+                longitude != null &&
+                latitude in -MAX_LATITUDE..MAX_LATITUDE &&
+                longitude in -MAX_LONGITUDE..MAX_LONGITUDE
+        return if (onTheGlobe) latitude!! to longitude!! else null
     }
 }

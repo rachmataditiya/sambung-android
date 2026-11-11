@@ -88,11 +88,11 @@ class SambungOutbox(
          * when its audience was heard after the last try: sending into silence just spends airtime.
          */
         fun shouldRetry(sentAtMillis: Long, attempts: Attempts, audienceHeardAtMillis: Long, now: Long): Boolean {
-            if (attempts.count >= MAX_ATTEMPTS) return false
-            if (now - sentAtMillis > MAX_AGE_MILLIS) return false
             val lastTry = maxOf(sentAtMillis, attempts.lastAtMillis)
-            if (now - lastTry < MIN_GAP_MILLIS) return false
-            return audienceHeardAtMillis > lastTry
+            return attempts.count < MAX_ATTEMPTS &&
+                now - sentAtMillis <= MAX_AGE_MILLIS &&
+                now - lastTry >= MIN_GAP_MILLIS &&
+                audienceHeardAtMillis > lastTry
         }
     }
 }

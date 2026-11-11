@@ -387,7 +387,6 @@ fun ActionModeTopBar(selectedCount: Int, onAction: (MessageMenuAction) -> Unit) 
 @Composable
 fun MessageTopBar(
     title: String,
-    subtitle: String? = null,
     channelIndex: Int?,
     mismatchKey: Boolean,
     onNavigateBack: () -> Unit,
@@ -395,6 +394,7 @@ fun MessageTopBar(
     channelIndexParam: Int?,
     showQuickChat: Boolean,
     onToggleQuickChat: () -> Unit,
+    subtitle: String? = null,
     onNavigateToQuickChatOptions: () -> Unit = {},
     showFilterToggle: Boolean = true,
     filteringDisabled: Boolean = false,
