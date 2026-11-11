@@ -405,8 +405,19 @@
     <string name="sambung_ago_hours">%1$d jam lalu</string>
     <string name="sambung_ago_minutes">%1$d menit lalu</string>
     <string name="sambung_ago_now">baru saja</string>
+    <string name="sambung_compass_e">timur</string>
+    <string name="sambung_compass_n">utara</string>
+    <string name="sambung_compass_ne">timur laut</string>
+    <string name="sambung_compass_nw">barat laut</string>
+    <string name="sambung_compass_s">selatan</string>
+    <string name="sambung_compass_se">tenggara</string>
+    <string name="sambung_compass_sw">barat daya</string>
+    <string name="sambung_compass_w">barat</string>
     <string name="sambung_heard_nodes">%1$d node terdengar dalam 2 jam terakhir</string>
     <string name="sambung_heard_none">Belum ada node lain yang terdengar</string>
+    <string name="sambung_location_distance">%1$s ke arah %2$s</string>
+    <string name="sambung_location_here">Di tempat yang sama denganmu</string>
+    <string name="sambung_location_missing">Belum ada posisi. Izinkan lokasi untuk Sambung, atau tunggu sampai radio mendapat posisi.</string>
     <string name="sambung_location_open">Buka di peta</string>
     <string name="sambung_location_shared">Lokasi dibagikan</string>
     <string name="sambung_media_delivered">Sampai ke penerima</string>
@@ -430,6 +441,7 @@
     <string name="sambung_reach_stale">Terakhir terdengar %1$s</string>
     <string name="sambung_send_photo">Kirim foto</string>
     <string name="sambung_send_voice">Kirim pesan suara</string>
+    <string name="sambung_share_location">Bagikan lokasiku</string>
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Perangkat</string>
     <string name="sambung_tab_network">Jaringan</string>

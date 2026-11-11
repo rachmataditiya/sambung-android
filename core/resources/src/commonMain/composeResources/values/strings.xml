@@ -1940,8 +1940,19 @@
     <string name="sambung_ago_hours">%1$d h ago</string>
     <string name="sambung_ago_minutes">%1$d min ago</string>
     <string name="sambung_ago_now">just now</string>
+    <string name="sambung_compass_e">east</string>
+    <string name="sambung_compass_n">north</string>
+    <string name="sambung_compass_ne">northeast</string>
+    <string name="sambung_compass_nw">northwest</string>
+    <string name="sambung_compass_s">south</string>
+    <string name="sambung_compass_se">southeast</string>
+    <string name="sambung_compass_sw">southwest</string>
+    <string name="sambung_compass_w">west</string>
     <string name="sambung_heard_nodes">%1$d nodes heard in the last 2 hours</string>
     <string name="sambung_heard_none">No other node heard yet</string>
+    <string name="sambung_location_distance">%1$s to the %2$s</string>
+    <string name="sambung_location_here">Right where you are</string>
+    <string name="sambung_location_missing">No position yet. Allow location for Sambung, or wait until the radio has a position.</string>
     <string name="sambung_location_open">Open in maps</string>
     <string name="sambung_location_shared">Shared location</string>
     <string name="sambung_media_delivered">Delivered to recipient</string>
@@ -1965,6 +1976,7 @@
     <string name="sambung_reach_stale">Last heard %1$s</string>
     <string name="sambung_send_photo">Send photo</string>
     <string name="sambung_send_voice">Send voice message</string>
+    <string name="sambung_share_location">Share my location</string>
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Device</string>
     <string name="sambung_tab_network">Network</string>

@@ -16,6 +16,11 @@
  */
 package org.meshtastic.core.model
 
+import org.meshtastic.core.common.util.bearing
+import org.meshtastic.core.common.util.latLongToMeter
+import kotlin.math.abs
+import kotlin.math.roundToLong
+
 /**
  * A position sent as ordinary text ("📍 Lokasi saya: -6.20880, 106.84560"), so any client can read it and Sambung can
  * draw it as a location card.
@@ -39,4 +44,42 @@ object SambungLocationMessage {
                 longitude in -MAX_LONGITUDE..MAX_LONGITUDE
         return if (onTheGlobe) latitude!! to longitude!! else null
     }
+
+    /**
+     * The text to send for a position. Five decimals is about a metre. The words are the iPhone app's and stay as they
+     * are in every language, so both apps send the same message.
+     */
+    fun text(latitude: Double, longitude: Double): String = "📍 Lokasi saya: ${fixed5(latitude)}, ${fixed5(longitude)}"
+
+    private fun fixed5(value: Double): String {
+        val scaled = (abs(value) * DECIMALS_SCALE).roundToLong()
+        val sign = if (value < 0 && scaled != 0L) "-" else ""
+        return "$sign${scaled / DECIMALS_SCALE}.${(scaled % DECIMALS_SCALE).toString().padStart(DECIMALS, '0')}"
+    }
+
+    fun distanceMeters(from: Pair<Double, Double>, to: Pair<Double, Double>): Double =
+        latLongToMeter(from.first, from.second, to.first, to.second)
+
+    /** Which of the eight compass points [to] lies toward, seen from [from]: 0 is north, then clockwise. */
+    fun compassPoint(from: Pair<Double, Double>, to: Pair<Double, Double>): Int {
+        val degrees = (bearing(from.first, from.second, to.first, to.second) % FULL_TURN + FULL_TURN) % FULL_TURN
+        return ((degrees + COMPASS_STEP / 2) / COMPASS_STEP).toInt() % COMPASS_POINTS
+    }
+
+    /** "120 m" below a kilometre, to the nearest ten; "1.1 km" from there on. */
+    fun distanceLabel(meters: Double): String = if (meters < METERS_PER_KM) {
+        "${(meters / ROUND_TO_METERS).roundToLong() * ROUND_TO_METERS} m"
+    } else {
+        val tenths = (meters / METERS_PER_KM * TENTHS).roundToLong()
+        "${tenths / TENTHS}.${tenths % TENTHS} km"
+    }
+
+    private const val DECIMALS = 5
+    private const val DECIMALS_SCALE = 100_000L
+    private const val FULL_TURN = 360.0
+    private const val COMPASS_POINTS = 8
+    private const val COMPASS_STEP = FULL_TURN / COMPASS_POINTS
+    private const val METERS_PER_KM = 1000.0
+    private const val ROUND_TO_METERS = 10L
+    private const val TENTHS = 10L
 }

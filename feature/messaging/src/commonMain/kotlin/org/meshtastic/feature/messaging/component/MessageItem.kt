@@ -476,6 +476,7 @@ fun MessageItem(
                                 latitude = latitude,
                                 longitude = longitude,
                                 contentColor = contentColor,
+                                origin = ourNode.validPosition?.let { ourNode.latitude to ourNode.longitude },
                             )
                         }
                     } else {

@@ -31,7 +31,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import org.meshtastic.core.model.SambungLocationMessage
 import org.meshtastic.core.resources.Res
+import org.meshtastic.core.resources.sambung_compass_e
+import org.meshtastic.core.resources.sambung_compass_n
+import org.meshtastic.core.resources.sambung_compass_ne
+import org.meshtastic.core.resources.sambung_compass_nw
+import org.meshtastic.core.resources.sambung_compass_s
+import org.meshtastic.core.resources.sambung_compass_se
+import org.meshtastic.core.resources.sambung_compass_sw
+import org.meshtastic.core.resources.sambung_compass_w
+import org.meshtastic.core.resources.sambung_location_distance
+import org.meshtastic.core.resources.sambung_location_here
 import org.meshtastic.core.resources.sambung_location_open
 import org.meshtastic.core.resources.sambung_location_shared
 import org.meshtastic.core.ui.icon.LocationOn
@@ -48,6 +59,8 @@ internal fun SambungLocationCard(
     longitude: Double,
     contentColor: Color,
     modifier: Modifier = Modifier,
+    /** Where this radio is, to say how far away and which way the shared position lies. */
+    origin: Pair<Double, Double>? = null,
 ) {
     val uriHandler = LocalUriHandler.current
     Column(modifier = modifier) {
@@ -60,6 +73,24 @@ internal fun SambungLocationCard(
                     style = MaterialTheme.typography.titleSmall,
                     color = contentColor,
                 )
+                if (origin != null) {
+                    val meters = SambungLocationMessage.distanceMeters(origin, latitude to longitude)
+                    val compass = COMPASS_NAMES[SambungLocationMessage.compassPoint(origin, latitude to longitude)]
+                    Text(
+                        text =
+                        if (meters < HERE_METERS) {
+                            stringResource(Res.string.sambung_location_here)
+                        } else {
+                            stringResource(
+                                Res.string.sambung_location_distance,
+                                SambungLocationMessage.distanceLabel(meters),
+                                stringResource(compass),
+                            )
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = contentColor,
+                    )
+                }
                 Text(text = "$latitude, $longitude", style = MaterialTheme.typography.bodySmall, color = contentColor)
             }
         }
@@ -73,3 +104,16 @@ internal fun SambungLocationCard(
         }
     }
 }
+
+private const val HERE_METERS = 10.0
+private val COMPASS_NAMES =
+    listOf(
+        Res.string.sambung_compass_n,
+        Res.string.sambung_compass_ne,
+        Res.string.sambung_compass_e,
+        Res.string.sambung_compass_se,
+        Res.string.sambung_compass_s,
+        Res.string.sambung_compass_sw,
+        Res.string.sambung_compass_w,
+        Res.string.sambung_compass_nw,
+    )

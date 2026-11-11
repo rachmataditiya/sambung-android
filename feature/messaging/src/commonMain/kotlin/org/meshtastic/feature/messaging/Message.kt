@@ -126,6 +126,7 @@ import org.meshtastic.feature.messaging.component.MessageSearchBar
 import org.meshtastic.feature.messaging.component.MessageTopBar
 import org.meshtastic.feature.messaging.component.QuickChatRow
 import org.meshtastic.feature.messaging.component.ReplySnippet
+import org.meshtastic.feature.messaging.component.SambungLocationButton
 import org.meshtastic.feature.messaging.component.SambungPhotoButton
 import org.meshtastic.feature.messaging.component.SambungVoiceButton
 import org.meshtastic.feature.messaging.component.ScrollToBottomFab
@@ -531,6 +532,9 @@ fun MessageScreen(
                                     (channelIndex?.let { channels?.getChannel(it)?.settings?.psk?.size } ?: 0) > 1
                                 )
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (connectionState is ConnectionState.Connected && !isRetiredChannel) {
+                            SambungLocationButton(textFieldState = messageInputState, ourNode = ourNode)
+                        }
                         if (photoAllowed) {
                             SambungPhotoButton(contactKey = contactKey, ourNodeNum = ourNode?.num)
                             SambungVoiceButton(contactKey = contactKey, ourNodeNum = ourNode?.num)

@@ -41,4 +41,30 @@ class SambungLocationMessageTest {
     fun aLatitudeOffTheGlobeIsRefused() {
         assertNull(SambungLocationMessage.coordinate("📍 Lokasi saya: 96.00000, 106.84560"))
     }
+
+    @Test
+    fun thePositionSentIsThePositionRead() {
+        assertEquals("📍 Lokasi saya: -6.20880, 106.84560", SambungLocationMessage.text(-6.2088, 106.8456))
+        assertEquals(
+            -6.2088 to 106.8456,
+            SambungLocationMessage.coordinate(SambungLocationMessage.text(-6.2088, 106.8456)),
+        )
+        assertEquals("📍 Lokasi saya: -0.00001, 0.00000", SambungLocationMessage.text(-0.00001, 0.0))
+    }
+
+    @Test
+    fun distanceReadsInMetresThenKilometres() {
+        assertEquals("120 m", SambungLocationMessage.distanceLabel(123.0))
+        assertEquals("1.1 km", SambungLocationMessage.distanceLabel(1_100.0))
+        assertEquals("12.0 km", SambungLocationMessage.distanceLabel(12_010.0))
+    }
+
+    @Test
+    fun directionIsOneOfEightCompassPoints() {
+        val here = -6.2 to 106.8
+        assertEquals(0, SambungLocationMessage.compassPoint(here, -6.1 to 106.8)) // north
+        assertEquals(2, SambungLocationMessage.compassPoint(here, -6.2 to 106.9)) // east
+        assertEquals(4, SambungLocationMessage.compassPoint(here, -6.3 to 106.8)) // south
+        assertEquals(5, SambungLocationMessage.compassPoint(here, -6.3 to 106.7)) // southwest
+    }
 }

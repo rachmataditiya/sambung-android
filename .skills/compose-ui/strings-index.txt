@@ -1868,8 +1868,19 @@ sambung_ago_days
 sambung_ago_hours
 sambung_ago_minutes
 sambung_ago_now
+sambung_compass_e
+sambung_compass_n
+sambung_compass_ne
+sambung_compass_nw
+sambung_compass_s
+sambung_compass_se
+sambung_compass_sw
+sambung_compass_w
 sambung_heard_nodes
 sambung_heard_none
+sambung_location_distance
+sambung_location_here
+sambung_location_missing
 sambung_location_open
 sambung_location_shared
 sambung_media_delivered
@@ -1893,6 +1904,7 @@ sambung_reach_relays
 sambung_reach_stale
 sambung_send_photo
 sambung_send_voice
+sambung_share_location
 sambung_tab_chat
 sambung_tab_device
 sambung_tab_network
