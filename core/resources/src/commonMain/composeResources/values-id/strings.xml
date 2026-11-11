@@ -409,6 +409,13 @@
     <string name="sambung_heard_none">Belum ada node lain yang terdengar</string>
     <string name="sambung_location_open">Buka di peta</string>
     <string name="sambung_location_shared">Lokasi dibagikan</string>
+    <string name="sambung_media_delivered">Sampai ke penerima</string>
+    <string name="sambung_media_incomplete">Tidak lengkap, sebagian paket tidak sampai</string>
+    <string name="sambung_media_not_sent">Gagal terkirim</string>
+    <string name="sambung_media_receiving">Menerima paket %1$d dari %2$d</string>
+    <string name="sambung_media_sending">Mengirim paket %1$d dari %2$d</string>
+    <string name="sambung_media_unreadable">HP ini tidak bisa menampilkan format gambar ini</string>
+    <string name="sambung_photo">Foto</string>
     <string name="sambung_pick_radio">Ketuk untuk memilih radio</string>
     <string name="sambung_reach_direct">Terdengar langsung, %1$s</string>
     <string name="sambung_reach_internet">Terdengar lewat internet, %1$s</string>
@@ -418,6 +425,7 @@
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Perangkat</string>
     <string name="sambung_tab_network">Jaringan</string>
+    <string name="sambung_voice_not_playable">Pesan suara. Memutarnya di Android belum siap.</string>
     <string name="save">Simpan</string>
     <string name="save_changes">Simpan</string>
     <string name="scan_bluetooth_devices">Pindai radio Bluetooth</string>

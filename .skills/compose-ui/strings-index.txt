@@ -1872,6 +1872,13 @@ sambung_heard_nodes
 sambung_heard_none
 sambung_location_open
 sambung_location_shared
+sambung_media_delivered
+sambung_media_incomplete
+sambung_media_not_sent
+sambung_media_receiving
+sambung_media_sending
+sambung_media_unreadable
+sambung_photo
 sambung_pick_radio
 sambung_reach_direct
 sambung_reach_internet
@@ -1881,6 +1888,7 @@ sambung_reach_stale
 sambung_tab_chat
 sambung_tab_device
 sambung_tab_network
+sambung_voice_not_playable
 sample_message
 sats
 save

@@ -65,6 +65,7 @@ import org.meshtastic.core.repository.RadioConfigRepository
 import org.meshtastic.core.repository.RadioInterfaceService
 import org.meshtastic.core.repository.RadioSessionContext
 import org.meshtastic.core.repository.RemoteShellHandler
+import org.meshtastic.core.repository.SambungTransfers
 import org.meshtastic.core.repository.ServiceStateWriter
 import org.meshtastic.core.repository.StoreForwardPacketHandler
 import org.meshtastic.core.repository.TelemetryPacketHandler
@@ -112,6 +113,7 @@ class MeshDataHandlerImpl(
     private val telemetryHandler: TelemetryPacketHandler,
     private val adminPacketHandler: AdminPacketHandler,
     private val remoteShellHandler: RemoteShellHandler,
+    private val sambungTransfers: SambungTransfers,
     private val collectorRegistry: DiscoveryPacketCollectorRegistry,
     private val geofenceMonitor: GeofenceMonitor,
     private val meshBeaconRepository: MeshBeaconRepository,
@@ -209,9 +211,11 @@ class MeshDataHandlerImpl(
                 neighborInfoHandler.handleNeighborInfo(packet)
             }
 
+            // Sambung: photos and voice clips travel on the private port.
+            PortNum.PRIVATE_APP -> sambungTransfers.handlePacket(packet, myNodeNum)
+
             PortNum.ATAK_PLUGIN,
             PortNum.ATAK_PLUGIN_V2,
-            PortNum.PRIVATE_APP,
             -> {}
 
             PortNum.RANGE_TEST_APP,

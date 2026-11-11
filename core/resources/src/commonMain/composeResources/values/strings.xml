@@ -1944,6 +1944,13 @@
     <string name="sambung_heard_none">No other node heard yet</string>
     <string name="sambung_location_open">Open in maps</string>
     <string name="sambung_location_shared">Shared location</string>
+    <string name="sambung_media_delivered">Delivered to recipient</string>
+    <string name="sambung_media_incomplete">Incomplete, some packets did not arrive</string>
+    <string name="sambung_media_not_sent">Not sent</string>
+    <string name="sambung_media_receiving">Receiving packet %1$d of %2$d</string>
+    <string name="sambung_media_sending">Sending packet %1$d of %2$d</string>
+    <string name="sambung_media_unreadable">This phone cannot show this picture format</string>
+    <string name="sambung_photo">Photo</string>
     <string name="sambung_pick_radio">Tap to pick a radio</string>
     <string name="sambung_reach_direct">Heard directly, %1$s</string>
     <string name="sambung_reach_internet">Heard over the internet, %1$s</string>
@@ -1953,6 +1960,7 @@
     <string name="sambung_tab_chat">Chat</string>
     <string name="sambung_tab_device">Device</string>
     <string name="sambung_tab_network">Network</string>
+    <string name="sambung_voice_not_playable">Voice message. Playing it on Android is not ready yet.</string>
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I'm kinda scared.</string>
     <string name="sats">Sats</string>
     <string name="save">Save</string>

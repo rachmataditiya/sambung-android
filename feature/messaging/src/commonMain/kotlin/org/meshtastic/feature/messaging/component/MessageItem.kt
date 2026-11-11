@@ -456,6 +456,12 @@ fun MessageItem(
                 )
 
                 Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                    // Sambung: a photo that travelled with this message is drawn above its text.
+                    SambungMediaView(
+                        senderNodeNum = if (message.fromLocal) ourNode.num else node.num,
+                        packetId = message.packetId,
+                        contentColor = contentColor,
+                    )
                     if (searchQuery.isNotEmpty()) {
                         HighlightedText(
                             text = message.text,

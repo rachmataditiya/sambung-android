@@ -167,6 +167,7 @@ class MeshDataHandlerTest {
                 telemetryHandler = telemetryHandler,
                 adminPacketHandler = adminPacketHandler,
                 remoteShellHandler = remoteShellHandler,
+                sambungTransfers = mock(MockMode.autofill),
                 collectorRegistry = mock(MockMode.autofill),
                 // GeofenceMonitor is a final @Single (mokkery can't mock it) — use a real one over mocked
                 // collaborators. With no geofence-bearing waypoints emitted, onPositionReceived is a no-op.
