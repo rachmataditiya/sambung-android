@@ -272,7 +272,9 @@ fun MessageScreen(
         SambungMediaBoard.arrivedVoice.collect { arrival ->
             val isDirectHere = nodeId != NodeAddress.ID_BROADCAST
             val peer = if (isDirectHere) viewModel.getNode(nodeId).num else null
-            if (arrival.isFor(peerNodeNum = peer, channelIndex = channelIndex)) sambungPlayVoice(arrival.clip)
+            if (arrival.isFor(peerNodeNum = peer, channelIndex = channelIndex)) {
+                sambungPlayVoice(arrival.clip, arrival.key)
+            }
         }
     }
 

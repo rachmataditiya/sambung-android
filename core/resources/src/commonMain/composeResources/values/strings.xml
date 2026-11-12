@@ -1975,6 +1975,7 @@
     <string name="sambung_photo_estimate">What you see is what will be received. It takes about %1$d seconds to send, and the radio is busy with this photo for that long.</string>
     <string name="sambung_photo_large">Large</string>
     <string name="sambung_photo_medium">Medium</string>
+    <string name="sambung_photo_open">Open photo</string>
     <string name="sambung_photo_placeholder">🖼️ Photo</string>
     <string name="sambung_photo_small">Small</string>
     <string name="sambung_photo_too_big">This photo cannot be made small enough. Try a larger size or another photo.</string>
@@ -2009,6 +2010,7 @@
     <string name="sambung_voice_message">Voice message</string>
     <string name="sambung_voice_placeholder">🎤 Voice message %1$s</string>
     <string name="sambung_voice_play">Play voice message</string>
+    <string name="sambung_voice_stop">Stop voice message</string>
     <string name="sambung_your_radio">Your radio</string>
     <string name="sample_message" translatable="false">hey I found the cache, it is over here next to the big tiger. I'm kinda scared.</string>
     <string name="sats">Sats</string>

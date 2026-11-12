@@ -23,4 +23,6 @@ import androidx.compose.runtime.Composable
 actual fun rememberSambungVoiceRecorder(onClip: (ByteArray?) -> Unit): SambungVoiceRecorder =
     SambungVoiceRecorder(start = { onClip(null) }, stop = {})
 
-actual fun sambungPlayVoice(clip: ByteArray) = Unit
+actual fun sambungPlayVoice(clip: ByteArray, key: String?) = Unit
+
+actual fun sambungStopVoice() = Unit

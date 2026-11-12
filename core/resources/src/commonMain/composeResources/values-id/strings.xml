@@ -1455,6 +1455,8 @@
     <string name="sambung_talk_release">Lepas untuk kirim, geser ke kiri untuk batal</string>
     <string name="sambung_voice_message">Pesan suara</string>
     <string name="sambung_voice_placeholder">🎤 Pesan suara %1$s</string>
+    <string name="sambung_voice_stop">Hentikan pesan suara</string>
+    <string name="sambung_photo_open">Buka foto</string>
     <string name="sambung_voice_play">Putar pesan suara</string>
     <string name="sambung_your_radio">Radio kamu</string>
     <string name="sats">Satelit</string>

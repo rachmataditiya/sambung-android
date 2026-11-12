@@ -17,6 +17,7 @@
 package org.meshtastic.core.ui.util
 
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /** The longest voice message: ten seconds is 1000 bytes, six packets, about 25 seconds of airtime on LongFast. */
 const val SAMBUNG_VOICE_MAX_SECONDS = 10
@@ -39,5 +40,17 @@ class SambungVoiceRecorder(val start: () -> Unit, val stop: () -> Unit)
  */
 @Composable expect fun rememberSambungVoiceRecorder(onClip: (ByteArray?) -> Unit): SambungVoiceRecorder
 
-/** Plays a compressed clip: what was recorded is heard exactly as the other side will hear it. */
-expect fun sambungPlayVoice(clip: ByteArray)
+/** The voice clip being played, if any: the name it was started under and how far through it is, 0 to 1. */
+object SambungVoicePlayback {
+    val playing = MutableStateFlow<String?>(null)
+    val progress = MutableStateFlow(0f)
+}
+
+/**
+ * Plays a compressed clip: what was recorded is heard exactly as the other side will hear it. [key] names it in
+ * [SambungVoicePlayback] while it plays; a clip already playing is cut off.
+ */
+expect fun sambungPlayVoice(clip: ByteArray, key: String? = null)
+
+/** Stops whatever clip is playing. */
+expect fun sambungStopVoice()

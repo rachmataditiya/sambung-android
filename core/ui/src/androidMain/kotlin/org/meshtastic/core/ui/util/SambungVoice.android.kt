@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.meshtastic.core.codec2.SambungCodec2
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 private const val MAX_SAMPLES = SAMBUNG_VOICE_MAX_SECONDS * SambungCodec2.SAMPLE_RATE
@@ -48,6 +49,7 @@ private const val MIN_SAMPLES = SambungCodec2.SAMPLE_RATE / 2
 private const val BYTES_PER_SAMPLE = 2
 private const val MILLIS_PER_SECOND = 1000L
 private const val PLAYBACK_TAIL_MILLIS = 200L
+private const val PROGRESS_STEP_MILLIS = 50L
 
 @Composable
 actual fun rememberSambungVoiceRecorder(onClip: (ByteArray?) -> Unit): SambungVoiceRecorder {
@@ -117,7 +119,11 @@ private fun recordClip(isRecording: AtomicBoolean): ByteArray? {
     return if (count >= MIN_SAMPLES) SambungCodec2.encode(samples.copyOf(count)) else null
 }
 
-actual fun sambungPlayVoice(clip: ByteArray) {
+/** Each play or stop takes the next number; a playing clip ends when the number is no longer its own. */
+private val playbackTurn = AtomicInteger(0)
+
+actual fun sambungPlayVoice(clip: ByteArray, key: String?) {
+    val turn = playbackTurn.incrementAndGet()
     thread(name = "sambung-voice") {
         val samples = SambungCodec2.decode(clip)
         if (samples.isNotEmpty()) {
@@ -140,9 +146,29 @@ actual fun sambungPlayVoice(clip: ByteArray) {
                     .setTransferMode(AudioTrack.MODE_STATIC)
                     .build()
             track.write(samples, 0, samples.size)
+            SambungVoicePlayback.playing.value = key
             track.play()
-            Thread.sleep(samples.size * MILLIS_PER_SECOND / SambungCodec2.SAMPLE_RATE + PLAYBACK_TAIL_MILLIS)
+            // By the clock, not the track's own position, which a static track does not always bring to the end.
+            val length = samples.size * MILLIS_PER_SECOND / SambungCodec2.SAMPLE_RATE
+            val started = System.currentTimeMillis()
+            var elapsed = 0L
+            while (playbackTurn.get() == turn && elapsed < length + PLAYBACK_TAIL_MILLIS) {
+                SambungVoicePlayback.progress.value = (elapsed.toFloat() / length).coerceAtMost(1f)
+                Thread.sleep(PROGRESS_STEP_MILLIS)
+                elapsed = System.currentTimeMillis() - started
+            }
             track.release()
+            if (playbackTurn.get() == turn) clearPlayback()
         }
     }
+}
+
+actual fun sambungStopVoice() {
+    playbackTurn.incrementAndGet()
+    clearPlayback()
+}
+
+private fun clearPlayback() {
+    SambungVoicePlayback.playing.value = null
+    SambungVoicePlayback.progress.value = 0f
 }

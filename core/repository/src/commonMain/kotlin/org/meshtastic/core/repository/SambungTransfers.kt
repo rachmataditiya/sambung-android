@@ -44,7 +44,14 @@ data class SambungMedia(
 
 /** A voice clip that has just arrived whole: who sent it, and whether to this node alone or to a channel. */
 @Suppress("ArrayInDataClass")
-data class SambungVoiceArrival(val senderNodeNum: Int, val isDirect: Boolean, val channel: Int, val clip: ByteArray) {
+data class SambungVoiceArrival(
+    val senderNodeNum: Int,
+    val isDirect: Boolean,
+    val channel: Int,
+    val clip: ByteArray,
+    /** Where the clip sits on the media board, so its bubble shows it playing. */
+    val key: String = "",
+) {
     /**
      * Whether the clip belongs to the conversation on screen: a direct one with [peerNodeNum], or, when that is null,
      * the channel [channelIndex].

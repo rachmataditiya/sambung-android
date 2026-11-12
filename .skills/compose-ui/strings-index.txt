@@ -1903,6 +1903,7 @@ sambung_photo
 sambung_photo_estimate
 sambung_photo_large
 sambung_photo_medium
+sambung_photo_open
 sambung_photo_placeholder
 sambung_photo_small
 sambung_photo_too_big
@@ -1937,6 +1938,7 @@ sambung_talk_release
 sambung_voice_message
 sambung_voice_placeholder
 sambung_voice_play
+sambung_voice_stop
 sambung_your_radio
 sample_message
 sats

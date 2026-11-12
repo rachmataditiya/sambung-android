@@ -108,12 +108,16 @@ class SambungTransfersImpl(
                 )
             }
         if (entry.finished) return
+        val before = entry.assembler.receivedCount
         entry.assembler.add(wire)
+        // Only requests that bring nothing count towards giving up.
+        if (entry.assembler.receivedCount > before) entry.requestRounds = 0
         entry.assembler.manifest?.let { manifest ->
             val file = entry.assembler.file()
+            val key = SambungMediaBoard.key(packet.from, manifest.messageId.toInt())
             entry.finished = file != null || entry.assembler.isCorrupt
             SambungMediaBoard.put(
-                SambungMediaBoard.key(packet.from, manifest.messageId.toInt()),
+                key,
                 SambungMedia(
                     kind = manifest.kind,
                     codec = manifest.codec,
@@ -127,7 +131,7 @@ class SambungTransfersImpl(
             if (file != null && manifest.kind == SambungTransferWire.KIND_VOICE) {
                 // Push to talk: the conversation on screen plays it at once.
                 SambungMediaBoard.arrivedVoice.tryEmit(
-                    SambungVoiceArrival(packet.from, entry.isDirect, packet.channel, file),
+                    SambungVoiceArrival(packet.from, entry.isDirect, packet.channel, file, key),
                 )
             }
             if (file != null && entry.isDirect) reply(Packet.Complete(id), packet.from, entry.replyChannel)
@@ -243,7 +247,9 @@ class SambungTransfersImpl(
         /** One full packet is about two seconds on air with LongFast, and the radio's send queue is short. */
         val PACKET_INTERVAL = 4.seconds
         val QUIET_BEFORE_REQUEST = 20.seconds
-        const val MAX_REQUEST_ROUNDS = 3
+
+        /** Requests in a row that brought nothing before a transfer is given up. */
+        const val MAX_REQUEST_ROUNDS = 4
         const val MAX_REQUESTED_CHUNKS = 32
         const val MAX_TRANSFER_ID = 0xFFFF
         const val HEX = 16
