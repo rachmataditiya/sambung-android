@@ -39,13 +39,18 @@ package org.meshtastic.core.model
 object SambungTransferWire {
     const val MAGIC = 0x53
 
-    /** A data payload holds 233 bytes; direct messages lose a few to their own encryption header. */
-    const val MAX_PACKET_SIZE = 200
+    /**
+     * One packet stays about 1.2 seconds on air with LongFast. Longer ones arrive broken from boards without a
+     * temperature-steady oscillator: the frequency slides while the radio transmits, and a two-second packet outlasts
+     * what the receiver can follow (seen as CRC errors on the receiving radio, November 2026). A data payload could
+     * hold 233 bytes; this is deliberately far below that.
+     */
+    const val MAX_PACKET_SIZE = 90
     const val MANIFEST_HEADER_SIZE = 17
     const val CHUNK_HEADER_SIZE = 5
 
-    /** Policy, not format: about a minute and a half of airtime on LongFast. */
-    const val MAX_CHUNKS = 24
+    /** Policy, not format: about a minute of airtime on LongFast, and room for the largest photo. */
+    const val MAX_CHUNKS = 56
 
     const val KIND_IMAGE = 1
     const val KIND_VOICE = 2

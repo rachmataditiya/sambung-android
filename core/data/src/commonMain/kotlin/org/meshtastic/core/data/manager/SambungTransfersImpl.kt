@@ -41,6 +41,7 @@ import org.meshtastic.core.repository.usecase.SendMessageUseCase
 import org.meshtastic.proto.MeshPacket
 import org.meshtastic.proto.PortNum
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -244,8 +245,8 @@ class SambungTransfersImpl(
     private fun update(key: String, change: (SambungMedia) -> SambungMedia) = SambungMediaBoard.update(key, change)
 
     private companion object {
-        /** One full packet is about two seconds on air with LongFast, and the radio's send queue is short. */
-        val PACKET_INTERVAL = 4.seconds
+        /** One packet is about 1.2 seconds on air with LongFast; the rest is room for its acknowledgement. */
+        val PACKET_INTERVAL = 2500.milliseconds
         val QUIET_BEFORE_REQUEST = 20.seconds
 
         /** Requests in a row that brought nothing before a transfer is given up. */

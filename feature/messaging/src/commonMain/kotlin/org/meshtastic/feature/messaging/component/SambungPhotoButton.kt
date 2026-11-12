@@ -65,7 +65,9 @@ private enum class SambungPhotoSize(val label: StringResource, val side: Int, va
 }
 
 private const val JPEG_CODEC = 2
-private const val SECONDS_PER_PACKET = 4
+
+/** Two and a half seconds a packet, as the transfer paces them. */
+private const val HALF_SECONDS_PER_PACKET = 5
 private val PREVIEW_SIZE = 160.dp
 
 /**
@@ -131,7 +133,7 @@ private fun SambungPhotoDialog(photo: ByteArray, contactKey: String, ourNodeNum:
                 val packets = encoded?.let { SambungTransferWire.packets(it, 1, SambungTransferWire.KIND_IMAGE, 0, 0L) }
                 Text(
                     if (packets != null) {
-                        stringResource(Res.string.sambung_photo_estimate, packets.size * SECONDS_PER_PACKET)
+                        stringResource(Res.string.sambung_photo_estimate, packets.size * HALF_SECONDS_PER_PACKET / 2)
                     } else {
                         stringResource(Res.string.sambung_photo_too_big)
                     },

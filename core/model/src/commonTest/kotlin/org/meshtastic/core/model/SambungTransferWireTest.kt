@@ -75,7 +75,7 @@ class SambungTransferWireTest {
     fun aFileSurvivesBeingCutSentOutOfOrderAndPutTogether() {
         val original = file(1_000)
         val packets = SambungTransferWire.packets(original, 7, SambungTransferWire.KIND_VOICE, 1, 0xFFFFFFFFL)!!
-        assertEquals(6, packets.size)
+        assertEquals(12, packets.size)
         assertTrue(packets.all { SambungTransferWire.encode(it).size <= SambungTransferWire.MAX_PACKET_SIZE })
 
         val assembler = SambungTransferWire.Assembler()
@@ -89,7 +89,7 @@ class SambungTransferWireTest {
 
     @Test
     fun missingChunksAreNamedUntilTheyArrive() {
-        val packets = SambungTransferWire.packets(file(600), 9, SambungTransferWire.KIND_IMAGE, 1, 1L)!!
+        val packets = SambungTransferWire.packets(file(250), 9, SambungTransferWire.KIND_IMAGE, 1, 1L)!!
         val assembler = SambungTransferWire.Assembler()
         assertEquals(listOf(0), assembler.missing)
         assembler.add(packets[0])
@@ -100,7 +100,7 @@ class SambungTransferWireTest {
 
     @Test
     fun aDamagedFileIsRefused() {
-        val packets = SambungTransferWire.packets(file(300), 9, SambungTransferWire.KIND_IMAGE, 1, 1L)!!
+        val packets = SambungTransferWire.packets(file(150), 9, SambungTransferWire.KIND_IMAGE, 1, 1L)!!
         val assembler = SambungTransferWire.Assembler()
         assembler.add(packets[0])
         val second = packets[1] as Packet.Chunk
@@ -112,8 +112,11 @@ class SambungTransferWireTest {
     @Test
     fun emptyAndOversizedFilesAreNotSent() {
         assertNull(SambungTransferWire.packets(ByteArray(0), 1, SambungTransferWire.KIND_IMAGE, 1, 1L))
-        assertNull(SambungTransferWire.packets(file(4_669), 1, SambungTransferWire.KIND_IMAGE, 1, 1L))
-        assertEquals(24, SambungTransferWire.packets(file(4_668), 1, SambungTransferWire.KIND_IMAGE, 1, 1L)?.size)
+        assertNull(SambungTransferWire.packets(file(4_749), 1, SambungTransferWire.KIND_IMAGE, 1, 1L))
+        assertEquals(
+            SambungTransferWire.MAX_CHUNKS,
+            SambungTransferWire.packets(file(4_748), 1, SambungTransferWire.KIND_IMAGE, 1, 1L)?.size,
+        )
     }
 
     @Test
